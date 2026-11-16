@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { IconeFogo, IconeSetaEsq, IconeTrofeu } from "@/components/icons";
+import type { ComponentType, SVGProps } from "react";
+import { IconeFogo, IconeGota, IconeSetaEsq, IconeTenis, IconeTrofeu } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
-import { consumoUltimosDias, estatisticasAgua, getPerfil } from "@/lib/storage";
+import { consumoUltimosDias, conquistasAtividade, estatisticasAgua, getPerfil } from "@/lib/storage";
 import { bateuMeta, calcularConquistas, calcularSequencia, proximoMarco } from "@/lib/habitos";
 
 const JANELA_DIAS = 400;
@@ -22,7 +23,6 @@ export default function PaginaConquistas() {
     melhorSequencia: seq.melhor,
     totalMlHistorico: totalMl,
   });
-  const feitas = conquistas.filter((c) => c.conquistada).length;
   const prox = proximoMarco(seq.atual);
   const ultimos14 = dias.slice(-14);
 
@@ -77,18 +77,37 @@ export default function PaginaConquistas() {
         </p>
       </section>
 
-      {/* conquistas */}
-      <div className="mt-6 mb-2 flex items-baseline justify-between">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-tinta-2">Conquistas</h2>
+      <GradeConquistas titulo="Hidratação" itens={conquistas} icone={IconeGota} />
+      <GradeConquistas titulo="Caminhada e treinos" itens={conquistasAtividade()} icone={IconeTenis} />
+    </div>
+  );
+}
+
+function GradeConquistas({
+  titulo,
+  itens,
+  icone: Icone,
+}: {
+  titulo: string;
+  itens: { id: string; titulo: string; descricao: string; conquistada: boolean; progresso: number }[];
+  icone: ComponentType<SVGProps<SVGSVGElement>>;
+}) {
+  const feitas = itens.filter((c) => c.conquistada).length;
+  return (
+    <section className="mt-6" aria-label={titulo}>
+      <div className="mb-2 flex items-baseline justify-between">
+        <h2 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-tinta-2">
+          <Icone width={14} height={14} aria-hidden /> {titulo}
+        </h2>
         <span className="text-xs font-semibold text-tinta-2">
-          {feitas} de {conquistas.length}
+          {feitas} de {itens.length}
         </span>
       </div>
       <ul className="grid grid-cols-2 gap-3">
-        {conquistas.map((c, i) => (
+        {itens.map((c, i) => (
           <li
             key={c.id}
-            style={{ "--i": i } as React.CSSProperties}
+            style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
             className={`surgir rounded-[var(--radius-card)] p-4 ${
               c.conquistada ? "bg-card shadow-[var(--shadow-card)]" : "border border-dashed border-black/10"
             }`}
@@ -110,6 +129,6 @@ export default function PaginaConquistas() {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }

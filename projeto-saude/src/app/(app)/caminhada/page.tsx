@@ -7,7 +7,7 @@ import { TopoFolha } from "@/components/decor";
 import DesenhoPercurso from "@/components/caminhada/DesenhoPercurso";
 import { IconeCadeado, IconeLocal, IconePausa, IconePlay, IconeParar, IconeSetaDir, IconeTenis } from "@/components/icons";
 import { useStorePronto } from "@/lib/hooks";
-import { getCaminhadas, getConsentimentoLocalizacao, registrarConsentimentoLocalizacao, dataLocalHoje, getPerfil } from "@/lib/storage";
+import { conquistasAtividade, getCaminhadas, getConsentimentoLocalizacao, registrarConsentimentoLocalizacao, dataLocalHoje, getPerfil } from "@/lib/storage";
 import {
   assinarRastreio,
   descartar,
@@ -22,6 +22,7 @@ import {
 } from "@/lib/rastreador";
 import { formatarDuracao, formatarKm, formatarRitmo, ritmoSPorKm, totaisCaminhadas } from "@/lib/caminhada";
 import { inicioDaSemana } from "@/lib/habitos";
+import { novasConquistas } from "@/lib/treinos";
 
 export default function PaginaCaminhada() {
   const pronto = useStorePronto();
@@ -157,8 +158,10 @@ function Gravando({ r }: { r: EstadoRastreio }) {
       return;
     }
     if (!window.confirm("Finalizar e salvar a caminhada?")) return;
+    const antes = conquistasAtividade();
     const c = finalizar();
-    router.push(c ? `/caminhada/${c.id}` : "/caminhada");
+    const novas = novasConquistas(antes, conquistasAtividade()).map((x) => x.id);
+    router.push(c ? `/caminhada/${c.id}${novas.length ? `?novas=${novas.join(",")}` : ""}` : "/caminhada");
   }
 
   return (

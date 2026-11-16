@@ -8,7 +8,7 @@ import {
   IconeGota,
   IconeGarfo,
   IconeCalendario,
-  IconePessoa,
+  IconeHalter,
 } from "./icons";
 
 type Aba = {
@@ -22,7 +22,7 @@ const ABAS: Aba[] = [
   { href: "/agua", rotulo: "Água", Icone: IconeGota },
   { href: "/diario", rotulo: "Diário", Icone: IconeGarfo },
   { href: "/planos", rotulo: "Planos", Icone: IconeCalendario },
-  { href: "/perfil", rotulo: "Perfil", Icone: IconePessoa },
+  { href: "/treinos", rotulo: "Treinos", Icone: IconeHalter },
 ];
 
 export default function TabBar() {
@@ -36,7 +36,8 @@ export default function TabBar() {
     >
       <ul className="mx-auto flex max-w-[480px] items-stretch justify-around px-2 py-2">
         {ABAS.map(({ href, rotulo, Icone }) => {
-          const ativo = pathname.startsWith(href);
+          // Caminhada (GPS) faz parte de Treinos
+          const ativo = pathname.startsWith(href) || (href === "/treinos" && pathname.startsWith("/caminhada"));
           return (
             <li key={href} className="flex-1">
               <Link

@@ -294,3 +294,52 @@ export const IconeLocal = (p: P) => (
     <circle cx="12" cy="10" r="2.4" />
   </svg>
 );
+
+export const IconeHalter = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M7 8v8M4.5 9.5v5M17 8v8M19.5 9.5v5M7 12h10" />
+  </svg>
+);
+
+export const IconeBike = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="6" cy="16" r="3.5" />
+    <circle cx="18" cy="16" r="3.5" />
+    <path d="M6 16l4-7h5l3 7M10 9 8.5 6.5H6.5M14 6.5h2" />
+  </svg>
+);
+
+export const IconeOndas = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M3 10c1.5-1.3 3-1.3 4.5 0s3 1.3 4.5 0 3-1.3 4.5 0 3 1.3 4.5 0" />
+    <path d="M3 15c1.5-1.3 3-1.3 4.5 0s3 1.3 4.5 0 3-1.3 4.5 0 3 1.3 4.5 0" />
+  </svg>
+);
+
+export const IconeYoga = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 8v5M5 11l7 2 7-2M8 20l4-7 4 7" />
+  </svg>
+);
+
+export const IconeRaio = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z" />
+  </svg>
+);
+
+export const IconeMusica = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M9 18V5l11-2v13" />
+    <circle cx="6.5" cy="18" r="2.5" />
+    <circle cx="17.5" cy="16" r="2.5" />
+  </svg>
+);
+
+export const IconeCronometro = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="13.5" r="7.5" />
+    <path d="M12 9.5v4l2.5 2M10 2.5h4M18.5 6.5l1.5-1.5" />
+  </svg>
+);

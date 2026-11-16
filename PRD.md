@@ -509,7 +509,9 @@ Barra fixa na base, presente nas telas principais:
 | **Água** | gota | Hidratação + histórico |
 | **Diário** | garfo/faca | Diário alimentar |
 | **Planos** | calendário | Regimes |
-| **Perfil** | pessoa | Perfil & configurações |
+| **Treinos** | halter | Meta semanal de atividade, caminhada com GPS, registro de treinos, treinos em casa |
+
+> **Mudança (nov/2026, decisão de produto):** a aba **Perfil** saiu da barra para dar lugar a **Treinos**; o Perfil abre pelo avatar no topo do Início.
 
 ### 12.6 Requisitos de experiência por módulo
 Como a estética é **Premium iOS**, cada módulo tem exigências de interação:

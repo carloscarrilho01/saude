@@ -20,6 +20,17 @@ import { CONFIG_LEMBRETES_PADRAO } from "./lembretes";
 import { metaComClimaDoDia } from "./hidratacao";
 import { apagarTodasAsFotos, removerFotosDoRegime } from "./fotos";
 import type { Caminhada } from "./caminhada";
+import {
+  META_ATIVIDADE_PADRAO,
+  calcularConquistasAtividade,
+  progressoSemana,
+  unificarAtividades,
+  type ConquistaAtividade,
+  type MetaAtividade,
+  type Treino,
+} from "./treinos";
+import type { ObjetivoTreino } from "./rotinasCasa";
+import { inicioDaSemana, somarDias } from "./habitos";
 
 const CHAVES = {
   perfil: "saude.perfil",
@@ -42,6 +53,9 @@ const CHAVES = {
   caminhadas: "saude.caminhadas",
   caminhadaAtiva: "saude.caminhadaAtiva", // sessão em andamento (recupera após recarregar)
   consentimentoLocalizacao: "saude.consentimentoLocalizacao",
+  treinos: "saude.treinos",
+  metaAtividade: "saude.metaAtividade",
+  objetivoTreino: "saude.objetivoTreino",
 } as const;
 
 const disponivel = () => typeof window !== "undefined";
@@ -583,6 +597,8 @@ export interface ExportacaoDados {
   muralLocal: unknown;
   apelidoMural: string | null;
   caminhadas: Caminhada[];
+  treinos: Treino[];
+  metaAtividade: MetaAtividade;
 }
 
 /** Reúne todos os dados do usuário num objeto legível (para download em JSON). */
@@ -604,6 +620,8 @@ export function exportarDados(): ExportacaoDados {
     muralLocal: ler<unknown>(CHAVES.mural),
     apelidoMural: getApelidoMural(),
     caminhadas: getCaminhadas(),
+    treinos: getTreinos(),
+    metaAtividade: getMetaAtividade(),
   };
 }
 
@@ -699,4 +717,63 @@ export function getConsentimentoLocalizacao(): string | null {
 }
 export function registrarConsentimentoLocalizacao() {
   escrever(CHAVES.consentimentoLocalizacao, new Date().toISOString());
+}
+
+// --- Treinos (registro manual + treinos em casa) ---
+
+export function getTreinos(): Treino[] {
+  return (ler<Treino[]>(CHAVES.treinos) ?? []).sort((a, b) => b.registradoEm.localeCompare(a.registradoEm));
+}
+export type NovoTreino = Omit<Treino, "id" | "registradoEm">;
+export function adicionarTreino(dados: NovoTreino): Treino {
+  const t: Treino = { ...dados, id: gerarId(), registradoEm: new Date().toISOString() };
+  escrever(CHAVES.treinos, [t, ...getTreinos()]);
+  return t;
+}
+export function removerTreino(id: string) {
+  escrever(CHAVES.treinos, getTreinos().filter((t) => t.id !== id));
+}
+
+export function getMetaAtividade(): MetaAtividade {
+  return ler<MetaAtividade>(CHAVES.metaAtividade) ?? META_ATIVIDADE_PADRAO;
+}
+export function salvarMetaAtividade(meta: MetaAtividade) {
+  escrever(CHAVES.metaAtividade, meta);
+}
+
+export function getObjetivoTreino(): ObjetivoTreino | null {
+  return ler<ObjetivoTreino>(CHAVES.objetivoTreino);
+}
+export function salvarObjetivoTreino(o: ObjetivoTreino) {
+  escrever(CHAVES.objetivoTreino, o);
+}
+
+/** Todas as atividades (manuais + GPS), mais recentes primeiro. */
+export function getAtividades() {
+  return unificarAtividades(getTreinos(), getCaminhadas());
+}
+
+/** Progresso da semana atual (segunda a domingo, no fuso do usuário). */
+export function progressoAtividadeSemana() {
+  const hoje = dataLocalHoje(getPerfil()?.fuso);
+  const segunda = inicioDaSemana(hoje);
+  return { segunda, ...progressoSemana(getAtividades(), segunda, somarDias(segunda, 6), getMetaAtividade()) };
+}
+
+/** Conquistas de caminhada e treinos a partir de todo o histórico. */
+export function conquistasAtividade(): ConquistaAtividade[] {
+  const caminhadas = getCaminhadas();
+  const atividades = getAtividades();
+  const meta = getMetaAtividade();
+  // semanas completas (ou a atual) em que a meta foi batida
+  const semanas = new Set(atividades.map((a) => inicioDaSemana(a.dataLocal)));
+  let semanasNaMeta = 0;
+  for (const seg of semanas) if (progressoSemana(atividades, seg, somarDias(seg, 6), meta).bateu) semanasNaMeta++;
+  return calcularConquistasAtividade({
+    kmTotal: caminhadas.reduce((s, c) => s + c.distanciaM, 0) / 1000,
+    maiorCaminhadaKm: Math.max(0, ...caminhadas.map((c) => c.distanciaM)) / 1000,
+    qtdCaminhadas: caminhadas.length,
+    qtdTreinos: atividades.length,
+    semanasNaMeta,
+  });
 }

@@ -2,39 +2,51 @@
 
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
-import { IconePlay, IconeTenis } from "../icons";
+import { IconeHalter, IconeTenis } from "../icons";
 import { assinarRastreio, lerRastreio, rastreioServidor } from "@/lib/rastreador";
-import { dataLocalHoje, getCaminhadas, getPerfil } from "@/lib/storage";
-import { formatarKm, totaisCaminhadas } from "@/lib/caminhada";
-import { inicioDaSemana } from "@/lib/habitos";
+import { getMetaAtividade, progressoAtividadeSemana } from "@/lib/storage";
+import { formatarKm } from "@/lib/caminhada";
 
-/** Card do Início: km da semana, ou atalho para a caminhada em andamento. */
+/** Card do Início: meta semanal de atividade, ou atalho para a caminhada em andamento. */
 export default function CartaoCaminhada() {
   const r = useSyncExternalStore(assinarRastreio, lerRastreio, rastreioServidor);
   const ativa = r.status !== "parado";
-  const segunda = inicioDaSemana(dataLocalHoje(getPerfil()?.fuso));
-  const semana = totaisCaminhadas(getCaminhadas().filter((c) => c.dataLocal >= segunda));
+  const p = progressoAtividadeSemana();
+  const unidade = getMetaAtividade().tipo === "minutos" ? "min" : "treinos";
+
+  if (ativa) {
+    return (
+      <Link href="/caminhada" style={{ "--i": 3 } as React.CSSProperties} className="surgir toque mt-4 flex items-center gap-4 rounded-[var(--radius-card)] bg-brand p-4 text-white shadow-[var(--shadow-card)]">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15">
+          <IconeTenis width={24} height={24} aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-menta-soft">
+            {r.status === "gravando" ? "Caminhada em andamento" : "Caminhada pausada"}
+          </p>
+          <p className="text-xl font-extrabold tabular-nums">{formatarKm(r.distanciaM)} km</p>
+        </div>
+      </Link>
+    );
+  }
 
   return (
-    <Link
-      href="/caminhada"
-      style={{ "--i": 3 } as React.CSSProperties}
-      className={`surgir toque mt-4 flex items-center gap-4 rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-card)] ${ativa ? "bg-brand text-white" : "bg-card"}`}
-    >
-      <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${ativa ? "bg-white/15" : "bg-verde-claro/35 text-brand"}`}>
-        <IconeTenis width={24} height={24} aria-hidden />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className={`text-xs font-semibold uppercase tracking-wide ${ativa ? "text-menta-soft" : "text-tinta-2"}`}>
-          {ativa ? (r.status === "gravando" ? "Caminhada em andamento" : "Caminhada pausada") : "Caminhada"}
-        </p>
-        <p className={`text-xl font-extrabold tabular-nums ${ativa ? "" : "text-tinta"}`}>
-          {ativa ? `${formatarKm(r.distanciaM)} km` : `${formatarKm(semana.distanciaM)} km na semana`}
-        </p>
+    <Link href="/treinos" style={{ "--i": 3 } as React.CSSProperties} className="surgir toque mt-4 block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]">
+      <div className="flex items-center gap-4">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-verde-claro/35 text-brand">
+          <IconeHalter width={24} height={24} aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-tinta-2">Atividade da semana</p>
+          <p className="text-xl font-extrabold tabular-nums text-tinta">
+            {p.atual} <span className="text-sm font-semibold text-tinta-2">de {p.meta} {unidade}</span>
+          </p>
+        </div>
+        <span className="text-sm font-bold tabular-nums text-brand">{p.pct}%</span>
       </div>
-      <span className={`flex h-10 w-10 items-center justify-center rounded-full ${ativa ? "bg-menta text-brand-deep" : "bg-brand text-white"}`} aria-hidden>
-        <IconePlay width={18} height={18} />
-      </span>
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/5">
+        <div className="h-full rounded-full bg-brand transition-[width] duration-700" style={{ width: `${p.pct}%` }} />
+      </div>
     </Link>
   );
 }

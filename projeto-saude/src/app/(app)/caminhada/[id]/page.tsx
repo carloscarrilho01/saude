@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import AvisoConquistas from "@/components/treinos/AvisoConquistas";
 import { TopoFolha } from "@/components/decor";
 import DesenhoPercurso from "@/components/caminhada/DesenhoPercurso";
 import { IconeCompartilhar, IconeLixeira, IconeSetaEsq, IconeTenis } from "@/components/icons";
 import { useStorePronto } from "@/lib/hooks";
-import { apagarPercursoCaminhada, getCaminhada, removerCaminhada } from "@/lib/storage";
+import { apagarPercursoCaminhada, conquistasAtividade, getCaminhada, removerCaminhada } from "@/lib/storage";
 import { formatarDuracao, formatarKm, formatarRitmo, ritmoSPorKm } from "@/lib/caminhada";
 import { compartilharCaminhada } from "@/lib/imagemCaminhada";
 
@@ -55,6 +56,10 @@ export default function DetalheCaminhada() {
         </Link>
         <span className="flex-1 pr-8 text-center text-sm font-semibold capitalize text-tinta-2">{data}</span>
       </header>
+
+      <Suspense fallback={null}>
+        <ConquistasDaCaminhada />
+      </Suspense>
 
       <section className="surgir overflow-hidden rounded-[var(--radius-card)] bg-brand-deep p-5 text-white shadow-[var(--shadow-float)]">
         <div className="flex h-56 items-center justify-center">
@@ -119,4 +124,12 @@ export default function DetalheCaminhada() {
       </div>
     </div>
   );
+}
+
+/** Mostra as conquistas desbloqueadas por esta caminhada (?novas=ids). */
+function ConquistasDaCaminhada() {
+  const ids = (useSearchParams().get("novas") ?? "").split(",").filter(Boolean);
+  const [aberto, setAberto] = useState(true);
+  const novas = aberto ? conquistasAtividade().filter((c) => ids.includes(c.id) && c.conquistada) : [];
+  return <AvisoConquistas novas={novas} aoFechar={() => setAberto(false)} />;
 }

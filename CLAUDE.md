@@ -62,7 +62,7 @@ Definir estes tokens no `@theme` do `globals.css`:
 - Alerta `#E5484D`
 - Fonte sans moderna (Inter/Geist), títulos bold/extrabold grandes.
 - Cards bem arredondados, sombras suaves, tab bar inferior de 5 abas:
-  **Início · Água · Diário · Planos · Perfil**.
+  **Início · Água · Diário · Planos · Treinos** (Perfil abre pelo avatar no Início — decisão nov/2026).
 - Prever estados: carregando, vazio, erro, offline (PRD §12.7).
 
 ## Regras de negócio que não podem ser violadas
