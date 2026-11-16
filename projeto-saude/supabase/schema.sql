@@ -108,9 +108,16 @@ create table if not exists public.planned_meals (
   tipo text not null check (tipo in ('cafe','almoco','lanche','jantar','outro')),
   horario time not null,
   descricao text not null default '',
-  ordem int not null default 0
+  ordem int not null default 0,
+  -- PRD §3.5: mudanças valem a partir da data local da alteração.
+  -- Remover = preencher removida_em (soft delete); o histórico de aderência não muda.
+  ativa_desde date,                  -- null = desde o início do plano
+  removida_em date,                  -- null = vigente
+  constraint planned_meals_vigencia_chk check (removida_em is null or ativa_desde is null or removida_em >= ativa_desde)
 );
 create index if not exists planned_meals_plan_idx on public.planned_meals (plan_id);
+-- leitura mais comum: refeições vigentes de um plano
+create index if not exists planned_meals_vigentes_idx on public.planned_meals (plan_id, ordem) where removida_em is null;
 create index if not exists planned_meals_user_idx on public.planned_meals (user_id);
 
 -- ============================================================

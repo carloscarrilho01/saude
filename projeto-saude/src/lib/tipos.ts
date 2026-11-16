@@ -82,6 +82,10 @@ export interface RefeicaoPlanejada {
   horario: string; // "HH:MM"
   descricao: string;
   ordem: number;
+  /** Data local a partir da qual conta na aderência (ausente = desde o início). */
+  ativaDesde?: string;
+  /** Data local em que foi removida; deixa de contar a partir dela (soft delete, PRD §3.5). */
+  removidaEm?: string;
 }
 
 export interface Regime {

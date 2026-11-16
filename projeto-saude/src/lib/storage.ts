@@ -413,10 +413,70 @@ function getTodasRefeicoesPlanejadas(): RefeicaoPlanejada[] {
   return ler<RefeicaoPlanejada[]>(CHAVES.refeicoesPlanejadas) ?? [];
 }
 
+const porOrdem = (a: RefeicaoPlanejada, b: RefeicaoPlanejada) =>
+  a.ordem - b.ordem || a.horario.localeCompare(b.horario);
+
+/** Refeições vigentes do plano (sem as removidas) — para listas e "hoje". */
 export function getRefeicoesPlanejadas(regimeId: string): RefeicaoPlanejada[] {
   return getTodasRefeicoesPlanejadas()
+    .filter((r) => r.regimeId === regimeId && !r.removidaEm)
+    .sort(porOrdem);
+}
+
+/** Todas as refeições do plano, inclusive removidas — para aderência de dias passados. */
+export function getRefeicoesPlanejadasComHistorico(regimeId: string): RefeicaoPlanejada[] {
+  return getTodasRefeicoesPlanejadas()
     .filter((r) => r.regimeId === regimeId)
-    .sort((a, b) => a.ordem - b.ordem || a.horario.localeCompare(b.horario));
+    .sort(porOrdem);
+}
+
+export type EdicaoRefeicao = Pick<RefeicaoPlanejada, "tipo" | "horario" | "descricao">;
+
+/**
+ * Salva a nova lista de refeições de um plano (PRD §3.5):
+ * - existentes (com id): tipo/horário/descrição atualizados no lugar;
+ * - novas (sem id): passam a contar a partir de hoje (`ativaDesde`);
+ * - ausentes da lista: removidas a partir de hoje (`removidaEm`), sem apagar
+ *   o histórico. Se foram criadas hoje e nunca valeram, são apagadas de vez.
+ * A ordem final segue o horário.
+ */
+export function salvarRefeicoesDoPlano(
+  regimeId: string,
+  lista: (EdicaoRefeicao & { id?: string })[],
+) {
+  const hoje = dataLocalHoje(getPerfil()?.fuso);
+  const ordenada = [...lista].sort((a, b) => a.horario.localeCompare(b.horario));
+  const ordemDe = new Map(ordenada.map((r, i) => [r, i]));
+  const editadas = new Map(lista.filter((r) => r.id).map((r) => [r.id as string, r]));
+
+  const resultado: RefeicaoPlanejada[] = [];
+  for (const r of getTodasRefeicoesPlanejadas()) {
+    if (r.regimeId !== regimeId || r.removidaEm) {
+      resultado.push(r);
+      continue;
+    }
+    const ed = editadas.get(r.id);
+    if (ed) {
+      resultado.push({ ...r, tipo: ed.tipo, horario: ed.horario, descricao: ed.descricao, ordem: ordemDe.get(ed) ?? r.ordem });
+    } else if (r.ativaDesde && r.ativaDesde >= hoje) {
+      // criada hoje e removida no mesmo dia: nunca valeu, pode sumir
+      continue;
+    } else {
+      resultado.push({ ...r, removidaEm: hoje });
+    }
+  }
+  for (const nova of lista.filter((r) => !r.id)) {
+    resultado.push({
+      id: gerarId(),
+      regimeId,
+      tipo: nova.tipo,
+      horario: nova.horario,
+      descricao: nova.descricao,
+      ordem: ordemDe.get(nova) ?? 0,
+      ativaDesde: hoje,
+    });
+  }
+  escrever(CHAVES.refeicoesPlanejadas, resultado);
 }
 
 export type NovaRefeicaoPlanejada = Omit<RefeicaoPlanejada, "id">;

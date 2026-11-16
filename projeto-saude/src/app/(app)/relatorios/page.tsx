@@ -10,7 +10,7 @@ import {
   metaDoDia,
   consumoUltimosDias,
   getRegimeAtivo,
-  getRefeicoesPlanejadas,
+  getRefeicoesPlanejadasComHistorico,
   getTodasConclusoes,
   getTodosItensDiario,
 } from "@/lib/storage";
@@ -41,12 +41,14 @@ export default function PaginaRelatorios() {
 
   // alimentação
   const regime = getRegimeAtivo();
-  const refeicoes = regime ? getRefeicoesPlanejadas(regime.id) : [];
+  const refeicoes = regime ? getRefeicoesPlanejadasComHistorico(regime.id) : [];
   const conclusoes = getTodasConclusoes();
   const itens = getTodosItensDiario();
   const datas7 = semanaAtual.map((d) => d.data);
-  const aderSemana = aderenciaPeriodo(refeicoes, datas7, conclusoes, itens);
-  const aderPorDia = datas7.map((d) => aderenciaDoDia(refeicoes, d, conclusoes, itens).pct);
+  // dias antes do início do plano não têm refeições planejadas → fora do denominador (§3.5)
+  const noPlano = (d: string) => !regime || d >= regime.dataInicio;
+  const aderSemana = aderenciaPeriodo(refeicoes, datas7.filter(noPlano), conclusoes, itens);
+  const aderPorDia = datas7.map((d) => (noPlano(d) ? aderenciaDoDia(refeicoes, d, conclusoes, itens).pct : 0));
 
   return (
     <div className="relative px-5 pb-10 pt-5" style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}>

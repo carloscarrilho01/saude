@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IconeSetaEsq, IconeCheck } from "@/components/icons";
+import { IconeSetaEsq, IconeCheck, IconeLapis } from "@/components/icons";
+import EditorPlano from "@/components/EditorPlano";
 import { useStorePronto } from "@/lib/hooks";
 import {
   getRegime,
@@ -24,6 +26,7 @@ export default function DetalhePlano() {
   const router = useRouter();
   const params = useParams();
   const id = String(params.id);
+  const [editando, setEditando] = useState(false);
 
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
@@ -82,10 +85,26 @@ export default function DetalhePlano() {
         )}
       </div>
 
-      <h2 className="mb-2 mt-6 text-sm font-bold text-tinta">Refeições do dia</h2>
+      {editando ? (
+        <EditorPlano regime={regime} refeicoes={refeicoes} aoTerminar={() => setEditando(false)} />
+      ) : (
+      <>
+      <div className="mb-2 mt-6 flex items-center justify-between">
+        <h2 className="text-sm font-bold text-tinta">Refeições do dia</h2>
+        {regime.status !== "encerrado" && (
+          <button type="button" onClick={() => setEditando(true)} className="flex items-center gap-1 text-sm font-semibold text-brand">
+            <IconeLapis width={15} height={15} /> Editar plano
+          </button>
+        )}
+      </div>
       {refeicoes.length === 0 ? (
         <div className="rounded-2xl bg-card p-6 text-center text-sm text-tinta-2 shadow-[var(--shadow-card)]">
-          Este plano ainda não tem refeições. (Edição de refeições: em breve.)
+          Este plano ainda não tem refeições.
+          {regime.status !== "encerrado" && (
+            <button type="button" onClick={() => setEditando(true)} className="mt-3 block w-full font-semibold text-brand">
+              Adicionar refeições
+            </button>
+          )}
         </div>
       ) : (
         <ul className="space-y-2">
@@ -138,6 +157,8 @@ export default function DetalhePlano() {
           Remover plano
         </button>
       </div>
+      </>
+      )}
     </div>
   );
 }
