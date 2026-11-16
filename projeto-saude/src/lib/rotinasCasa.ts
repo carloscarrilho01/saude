@@ -21,6 +21,8 @@ export interface Exercicio {
   /** Por tempo (segundos) ou por repetições. */
   segundos?: number;
   repeticoes?: number;
+  /** URL de vídeo real (mp4). Sem vídeo, o app mostra a animação do boneco. */
+  video?: string;
 }
 
 export interface Bloco {

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { TopoFolha } from "@/components/decor";
 import { IconeCronometro, IconeSetaEsq, IconePlay } from "@/components/icons";
 import { OBJETIVOS_TREINO, ROTINAS_CASA, getRotina } from "@/lib/rotinasCasa";
+import DemonstracaoExercicio from "@/components/treinos/DemonstracaoExercicio";
 
 export function generateStaticParams() {
   return ROTINAS_CASA.map((r) => ({ slug: r.slug }));
@@ -51,9 +52,13 @@ export default async function PaginaRotina({ params }: PageProps<"/treinos/casa/
           <ol className="mt-3 space-y-3">
             {b.exercicios.map((e) => (
               <li key={e.nome} className="flex gap-3">
-                <span className="flex h-9 w-12 shrink-0 items-center justify-center rounded-xl bg-verde-claro/35 text-xs font-bold tabular-nums text-brand">{medida(e)}</span>
+                <span className="flex h-[68px] w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-superficie">
+                  <DemonstracaoExercicio exercicio={e} tamanho={80} />
+                </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-tinta">{e.nome}</p>
+                  <p className="text-sm font-bold text-tinta">
+                    {e.nome} <span className="ml-1 rounded-md bg-verde-claro/35 px-1.5 py-0.5 text-[11px] tabular-nums text-brand">{medida(e)}</span>
+                  </p>
                   <p className="text-sm text-tinta-2">{e.como}</p>
                   <p className="mt-0.5 text-xs text-brand">Mais fácil: {e.facil}</p>
                 </div>

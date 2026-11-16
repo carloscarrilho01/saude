@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import AnelProgresso from "@/components/AnelProgresso";
 import { IconeCheck, IconeFechar, IconePausa, IconePlay, IconeSetaDir } from "@/components/icons";
 import AvisoConquistas from "@/components/treinos/AvisoConquistas";
+import DemonstracaoExercicio from "@/components/treinos/DemonstracaoExercicio";
 import { getRotina, passosDaRotina } from "@/lib/rotinasCasa";
 import { adicionarTreino, conquistasAtividade, dataLocalHoje, getPerfil } from "@/lib/storage";
 import { novasConquistas, type ConquistaAtividade } from "@/lib/treinos";
@@ -132,17 +133,18 @@ export default function TreinoGuiado() {
         ) : (
           <>
             <h1 className="text-3xl font-extrabold">{p.exercicio!.nome}</h1>
-            <div className="mt-6">
+            <DemonstracaoExercicio exercicio={p.exercicio!} tamanho={230} escuro className="mt-2" />
+            <div className="mt-2">
               {p.segundos ? (
-                <AnelProgresso percentual={pct} tamanho={190} espessura={14}>
-                  <span className="text-6xl font-extrabold tabular-nums">{restante}</span>
+                <AnelProgresso percentual={pct} tamanho={120} espessura={10}>
+                  <span className="text-4xl font-extrabold tabular-nums">{restante}</span>
                   <span className="text-xs text-white/60">segundos</span>
                 </AnelProgresso>
               ) : (
-                <p className="text-8xl font-extrabold tabular-nums">{p.exercicio!.repeticoes}<span className="text-3xl text-white/60">×</span></p>
+                <p className="text-6xl font-extrabold tabular-nums">{p.exercicio!.repeticoes}<span className="text-2xl text-white/60">×</span></p>
               )}
             </div>
-            <p className="mt-6 max-w-sm text-base text-white/85">{p.exercicio!.como}</p>
+            <p className="mt-4 max-w-sm text-base text-white/85">{p.exercicio!.como}</p>
             <p className="mt-2 max-w-sm text-sm text-menta">Mais fácil: {p.exercicio!.facil}</p>
           </>
         )}
