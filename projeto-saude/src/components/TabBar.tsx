@@ -18,7 +18,7 @@ type Aba = {
 };
 
 const ABAS: Aba[] = [
-  { href: "/", rotulo: "Início", Icone: IconeCasa },
+  { href: "/inicio", rotulo: "Início", Icone: IconeCasa },
   { href: "/agua", rotulo: "Água", Icone: IconeGota },
   { href: "/diario", rotulo: "Diário", Icone: IconeGarfo },
   { href: "/planos", rotulo: "Planos", Icone: IconeCalendario },
@@ -36,7 +36,7 @@ export default function TabBar() {
     >
       <ul className="mx-auto flex max-w-[480px] items-stretch justify-around px-2 py-2">
         {ABAS.map(({ href, rotulo, Icone }) => {
-          const ativo = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const ativo = pathname.startsWith(href);
           return (
             <li key={href} className="flex-1">
               <Link

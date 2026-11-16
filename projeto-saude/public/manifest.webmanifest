@@ -2,7 +2,7 @@
   "name": "Projeto Saúde",
   "short_name": "Saúde",
   "description": "Hidratação, alimentação e hábitos saudáveis em um só lugar.",
-  "start_url": "/",
+  "start_url": "/inicio",
   "display": "standalone",
   "background_color": "#f2f6f2",
   "theme_color": "#1b4b3a",

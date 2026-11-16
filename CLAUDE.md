@@ -41,6 +41,8 @@ Rode sempre dentro de `projeto-saude/`:
 - `npm run build` — build de produção
 - `npm run lint` — ESLint
 
+Rotas: `/` = landing pública · `/inicio` = dashboard do app. Publicação: ver `projeto-saude/DEPLOY.md`.
+
 ## Convenções de código
 - **Idioma:** UI e textos em **português (pt-BR)**. Nomes de código em português quando for
   domínio (ex.: `calcularMeta`, `registroAgua`), inglês para termos técnicos neutros é ok.

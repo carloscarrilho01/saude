@@ -53,3 +53,42 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Landing: slider de peso da calculadora */
+.faixa-peso {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.15);
+  accent-color: var(--color-menta);
+}
+.faixa-peso::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--color-menta);
+  border: 3px solid #fff;
+  cursor: pointer;
+}
+.faixa-peso::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-menta);
+  border: 3px solid #fff;
+  cursor: pointer;
+}
+.faixa-peso:focus-visible {
+  outline: 2px solid var(--color-menta);
+  outline-offset: 6px;
+}
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

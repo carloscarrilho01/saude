@@ -54,7 +54,7 @@ export default function Onboarding() {
       ajusteClimaMl: resultado.ajusteClimaMl,
       validoDesde: agora,
     });
-    router.push("/");
+    router.push("/inicio");
   }
 
   return (
@@ -80,7 +80,7 @@ export default function Onboarding() {
             Começar
           </button>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/inicio")}
             className="mt-4 text-sm font-medium text-tinta-2"
           >
             Já tenho uma conta
