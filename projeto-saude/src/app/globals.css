@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Design System — Projeto Saúde (premium, estilo iOS, verde).
+   Tailwind v4: tokens definidos em @theme viram utilitários (bg-brand, text-menta…). */
+@theme {
+  --color-brand: #1b4b3a; /* verde primário */
+  --color-brand-deep: #143d2b; /* fundo do card de hidratação */
+  --color-menta: #34d399; /* esmeralda / anel de progresso */
+  --color-menta-soft: #6ee7b7;
+  --color-verde-claro: #a7d8c4; /* ícones, chips */
+  --color-superficie: #f2f6f2; /* fundo da tela */
+  --color-card: #ffffff;
+  --color-tinta: #13261e; /* texto principal */
+  --color-tinta-2: #6b7d74; /* texto secundário */
+  --color-alerta: #e5484d;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --radius-card: 1.5rem; /* 24px */
+
+  --shadow-card: 0 10px 30px -12px rgb(19 38 30 / 0.18);
+  --shadow-float: 0 20px 50px -20px rgb(19 38 30 / 0.35);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-superficie);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh; /* respeita área segura em iPhones */
+}
+
+/* esconde a scrollbar mas mantém o scroll (visual limpo mobile) */
+.scroll-limpo::-webkit-scrollbar {
+  display: none;
+}
+.scroll-limpo {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

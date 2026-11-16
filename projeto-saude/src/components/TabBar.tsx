@@ -1,0 +1,64 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { ComponentType, SVGProps } from "react";
+import {
+  IconeCasa,
+  IconeGota,
+  IconeGarfo,
+  IconeCalendario,
+  IconePessoa,
+} from "./icons";
+
+type Aba = {
+  href: string;
+  rotulo: string;
+  Icone: ComponentType<SVGProps<SVGSVGElement>>;
+};
+
+const ABAS: Aba[] = [
+  { href: "/", rotulo: "Início", Icone: IconeCasa },
+  { href: "/agua", rotulo: "Água", Icone: IconeGota },
+  { href: "/diario", rotulo: "Diário", Icone: IconeGarfo },
+  { href: "/planos", rotulo: "Planos", Icone: IconeCalendario },
+  { href: "/perfil", rotulo: "Perfil", Icone: IconePessoa },
+];
+
+export default function TabBar() {
+  const pathname = usePathname();
+
+  return (
+    <nav
+      aria-label="Navegação principal"
+      className="sticky bottom-0 z-20 border-t border-black/5 bg-card/85 backdrop-blur-xl"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <ul className="mx-auto flex max-w-[480px] items-stretch justify-around px-2 py-2">
+        {ABAS.map(({ href, rotulo, Icone }) => {
+          const ativo = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          return (
+            <li key={href} className="flex-1">
+              <Link
+                href={href}
+                aria-current={ativo ? "page" : undefined}
+                className={`flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium transition-colors ${
+                  ativo ? "text-brand" : "text-tinta-2"
+                }`}
+              >
+                <span
+                  className={`flex h-9 w-12 items-center justify-center rounded-full transition-colors ${
+                    ativo ? "bg-verde-claro/40" : ""
+                  }`}
+                >
+                  <Icone width={22} height={22} strokeWidth={ativo ? 2.1 : 1.8} />
+                </span>
+                {rotulo}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}

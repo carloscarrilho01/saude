@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0f766e" />
+<title>Vida+ · Sistema de Saúde e Lembretes</title>
+<style>
+  :root{
+    --bg:#0b1120;
+    --bg-soft:#111a2e;
+    --card:#16213a;
+    --card-2:#1c2a47;
+    --line:#26354f;
+    --txt:#e8eef7;
+    --txt-dim:#9fb0c9;
+    --brand:#2dd4bf;
+    --brand-d:#0f766e;
+    --accent:#60a5fa;
+    --warn:#fbbf24;
+    --danger:#f87171;
+    --ok:#34d399;
+    --radius:18px;
+    --shadow:0 12px 40px rgba(0,0,0,.45);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 700px at 80% -10%, #16314a 0%, transparent 55%),
+               radial-gradient(900px 600px at -10% 10%, #1a2742 0%, transparent 50%),
+               var(--bg);
+    color:var(--txt);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand)}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 18px 90px}
+
+  /* Header */
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;margin-bottom:22px;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:46px;height:46px;border-radius:14px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--brand),var(--accent));
+    display:grid;place-items:center;font-size:24px;box-shadow:var(--shadow);
+  }
+  .brand h1{font-size:20px;margin:0;line-height:1.1}
+  .brand p{margin:2px 0 0;font-size:12.5px;color:var(--txt-dim)}
+  .head-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+  .btn{
+    border:1px solid var(--line);background:var(--card);color:var(--txt);
+    padding:10px 16px;border-radius:12px;font-size:14px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;transition:.15s;
+    font-weight:600;
+  }
+  .btn:hover{border-color:var(--brand);transform:translateY(-1px)}
+  .btn.primary{background:linear-gradient(135deg,var(--brand-d),var(--brand));border:none;color:#04221f}
+  .btn.ghost{background:transparent}
+  .btn.sm{padding:7px 12px;font-size:13px}
+  .btn.icon{padding:9px 11px}
+
+  .pill{
+    font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);
+    color:var(--txt-dim);display:inline-flex;align-items:center;gap:6px;background:var(--bg-soft);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--danger)}
+  .dot.on{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+
+  /* Banner permissao */
+  .perm-banner{
+    background:linear-gradient(135deg,#1e293b,#223049);
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;margin-bottom:20px;display:flex;gap:14px;align-items:center;
+    flex-wrap:wrap;justify-content:space-between;
+  }
+  .perm-banner .txt{flex:1 1 260px}
+  .perm-banner h3{margin:0 0 3px;font-size:15px}
+  .perm-banner p{margin:0;font-size:13px;color:var(--txt-dim)}
+
+  /* Grid cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+
+  .card{
+    background:linear-gradient(180deg,var(--card),var(--card-2));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .card .glow{position:absolute;inset:0;pointer-events:none;opacity:.14;
+    background:radial-gradient(400px 160px at 100% 0%, var(--accent), transparent 60%)}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .card-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex:0 0 auto}
+  .card-title{font-size:16px;font-weight:700;margin:0}
+  .card-sub{font-size:12.5px;color:var(--txt-dim);margin:2px 0 0}
+
+  /* Switch */
+  .switch{position:relative;width:46px;height:26px;flex:0 0 auto;cursor:pointer}
+  .switch input{display:none}
+  .slider{position:absolute;inset:0;background:#33425f;border-radius:999px;transition:.2s}
+  .slider:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;
+    background:#fff;border-radius:50%;transition:.2s}
+  .switch input:checked + .slider{background:linear-gradient(135deg,var(--brand-d),var(--brand))}
+  .switch input:checked + .slider:before{transform:translateX(20px)}
+
+  /* Counter / progress */
+  .count-row{display:flex;align-items:center;justify-content:space-between;margin:10px 0 8px}
+  .count-big{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .count-big span{font-size:14px;color:var(--txt-dim);font-weight:600}
+  .stepper{display:flex;gap:8px;align-items:center}
+  .round{
+    width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--bg-soft);
+    color:var(--txt);font-size:22px;cursor:pointer;display:grid;place-items:center;font-weight:700;transition:.15s;
+  }
+  .round:hover{border-color:var(--brand)}
+  .round.plus{background:linear-gradient(135deg,var(--brand-d),var(--brand));border:none;color:#04221f}
+
+  .bar{height:9px;background:#0d1626;border-radius:999px;overflow:hidden;margin-top:6px;border:1px solid var(--line)}
+  .bar > i{display:block;height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,var(--brand),var(--accent));transition:width .4s}
+
+  .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--txt-dim);margin-top:7px}
+
+  .config-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;
+    padding-top:12px;border-top:1px dashed var(--line)}
+  .config-row label{font-size:13px;color:var(--txt-dim)}
+  input[type=number],input[type=time],select,input[type=text]{
+    background:var(--bg-soft);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;outline:none;
+  }
+  input:focus,select:focus{border-color:var(--brand)}
+  input[type=number]{width:74px}
+
+  .next-fire{font-size:12px;color:var(--brand);margin-top:10px;display:flex;align-items:center;gap:6px}
+
+  /* Summary */
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 20px}
+  .stat{background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .stat .n{font-size:24px;font-weight:800}
+  .stat .l{font-size:12px;color:var(--txt-dim);margin-top:2px}
+
+  /* Section title */
+  .sec-title{display:flex;align-items:center;gap:10px;margin:26px 2px 12px;font-size:15px;color:var(--txt-dim);
+    text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .sec-title .line{flex:1;height:1px;background:var(--line)}
+
+  /* Custom reminders list */
+  .custom-list{display:flex;flex-direction:column;gap:10px}
+  .cust{display:flex;align-items:center;gap:12px;background:var(--bg-soft);border:1px solid var(--line);
+    border-radius:14px;padding:12px 14px}
+  .cust .emoji{font-size:22px}
+  .cust .info{flex:1}
+  .cust .info b{font-size:14px}
+  .cust .info small{display:block;color:var(--txt-dim);font-size:12px;margin-top:2px}
+  .cust .del{color:var(--danger);background:transparent;border:none;cursor:pointer;font-size:18px;padding:4px 8px}
+
+  /* Add form */
+  .add-form{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:12px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:12px;color:var(--txt-dim)}
+
+  /* Toast */
+  #toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:100;max-width:340px}
+  .toast{background:var(--card-2);border:1px solid var(--brand);border-radius:14px;padding:14px 16px;
+    box-shadow:var(--shadow);display:flex;gap:12px;align-items:flex-start;animation:slideIn .25s ease}
+  .toast .te{font-size:24px}
+  .toast b{font-size:14px}
+  .toast p{margin:3px 0 0;font-size:13px;color:var(--txt-dim)}
+  @keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+
+  footer{text-align:center;color:var(--txt-dim);font-size:12px;margin-top:40px}
+  .muted{color:var(--txt-dim)}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo">💚</div>
+      <div>
+        <h1>Vida+</h1>
+        <p>Seu sistema de saúde e lembretes diários</p>
+      </div>
+    </div>
+    <div class="head-actions">
+      <span class="pill" id="clock">--:--</span>
+      <span class="pill"><span class="dot" id="notifDot"></span><span id="notifState">Notificações off</span></span>
+      <button class="btn ghost sm" id="resetBtn" title="Zerar o dia">↺ Zerar dia</button>
+    </div>
+  </header>
+
+  <div class="perm-banner" id="permBanner">
+    <div class="txt">
+      <h3>🔔 Ative as notificações</h3>
+      <p>Para receber os lembretes de beber água, exercício e remédios mesmo com esta aba aberta, permita as notificações do navegador.</p>
+    </div>
+    <button class="btn primary" id="enableNotif">Ativar notificações</button>
+  </div>
+
+  <!-- Resumo do dia -->
+  <div class="summary" id="summary"></div>
+
+  <!-- Cards principais (hábitos com contador) -->
+  <div class="grid" id="trackers"></div>
+
+  <!-- Lembretes personalizados -->
+  <div class="sec-title">Lembretes personalizados <span class="line"></span></div>
+  <div class="card">
+    <div class="custom-list" id="customList"></div>
+    <div class="add-form">
+      <div class="field" style="flex:0 0 70px">
+        <label>Ícone</label>
+        <input type="text" id="cEmoji" value="⏰" maxlength="2" style="width:64px;text-align:center" />
+      </div>
+      <div class="field" style="flex:1 1 180px">
+        <label>O que lembrar</label>
+        <input type="text" id="cTitle" placeholder="Ex: Alongar as costas" />
+      </div>
+      <div class="field">
+        <label>A cada (min)</label>
+        <input type="number" id="cEvery" value="60" min="1" />
+      </div>
+      <button class="btn primary" id="addCustom">+ Adicionar</button>
+    </div>
+    <p class="muted" style="font-size:12px;margin:12px 0 0">
+      Dica: lembretes com intervalo em minutos tocam enquanto esta aba estiver aberta. Deixe fixada no navegador para não perder nenhum.
+    </p>
+  </div>
+
+  <footer>
+    Vida+ · Seus dados ficam salvos apenas neste navegador (nada é enviado para a internet). 🔒
+  </footer>
+</div>
+
+<div id="toasts"></div>
+
+<!-- som de alerta (gerado via WebAudio, sem arquivo externo) -->
+<script>
+/* ============================================================
+   Vida+ — lógica do app (sem dependências externas)
+   ============================================================ */
+
+const LS_KEY = "vidaplus_state_v1";
+
+/* ---------- estado padrão ---------- */
+function defaultState(){
+  return {
+    day: todayKey(),
+    trackers: {
+      water:    { on:true,  count:0, goal:8,  every:60,  lastFire:0 },
+      exercise: { on:true,  count:0, goal:1,  every:180, lastFire:0 },
+      meds:     { on:false, count:0, goal:2,  every:720, lastFire:0 },
+      meals:    { on:true,  count:0, goal:3,  every:300, lastFire:0 },
+      breaks:   { on:true,  count:0, goal:8,  every:50,  lastFire:0 },
+      sleep:    { on:true,  count:0, goal:1,  every:0,   lastFire:0, time:"22:30" }
+    },
+    custom: [],   // {id, emoji, title, every, lastFire}
+    notif: false
+  };
+}
+
+/* metadados visuais de cada tracker */
+const TRACKERS = {
+  water:    { emoji:"💧", color:"#38bdf8", title:"Beber água",      sub:"Mantenha-se hidratado",      unit:"copos" },
+  exercise: { emoji:"🏃", color:"#34d399", title:"Exercício",        sub:"Mexa o corpo todo dia",      unit:"sessões" },
+  meds:     { emoji:"💊", color:"#f472b6", title:"Remédios",         sub:"Não esqueça seus horários",  unit:"doses" },
+  meals:    { emoji:"🍎", color:"#fb923c", title:"Alimentação",      sub:"Refeições equilibradas",     unit:"refeições" },
+  breaks:   { emoji:"🧘", color:"#a78bfa", title:"Pausas / Postura", sub:"Levante e alongue",          unit:"pausas" },
+  sleep:    { emoji:"😴", color:"#818cf8", title:"Hora de dormir",   sub:"Durma bem, recarregue",      unit:"" }
+};
+
+let state = load();
+
+/* ---------- utilidades ---------- */
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+function now(){ return Date.now(); }
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return defaultState();
+    const s = JSON.parse(raw);
+    if(s.day !== todayKey()) return rolloverDay(s);
+    // merge com default (caso versões novas adicionem campos)
+    const d = defaultState();
+    d.trackers = Object.assign(d.trackers, s.trackers||{});
+    d.custom = s.custom||[];
+    d.notif = s.notif||false;
+    d.day = s.day;
+    return d;
+  }catch(e){ return defaultState(); }
+}
+function rolloverDay(old){
+  const d = defaultState();
+  // preserva configurações (metas, intervalos, on/off, horário de dormir) mas zera contadores
+  for(const k in d.trackers){
+    if(old.trackers && old.trackers[k]){
+      d.trackers[k].on    = old.trackers[k].on;
+      d.trackers[k].goal  = old.trackers[k].goal;
+      d.trackers[k].every = old.trackers[k].every;
+      if(old.trackers[k].time) d.trackers[k].time = old.trackers[k].time;
+    }
+  }
+  d.custom = (old.custom||[]).map(c=>({...c, lastFire:0}));
+  d.notif = old.notif||false;
+  return d;
+}
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+/* ---------- som de alerta (WebAudio) ---------- */
+let audioCtx = null;
+function beep(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const t = audioCtx.currentTime;
+    [0,0.18].forEach((off,i)=>{
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type="sine";
+      o.frequency.setValueAtTime(i? 660:880, t+off);
+      g.gain.setValueAtTime(0.0001, t+off);
+      g.gain.exponentialRampToValueAtTime(0.25, t+off+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+off+0.16);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t+off); o.stop(t+off+0.18);
+    });
+  }catch(e){}
+}
+
+/* ---------- notificações ---------- */
+function refreshNotifUI(){
+  const granted = ("Notification" in window) && Notification.permission==="granted";
+  document.getElementById("notifDot").classList.toggle("on", granted);
+  document.getElementById("notifState").textContent = granted ? "Notificações on" : "Notificações off";
+  document.getElementById("permBanner").classList.toggle("hide", granted);
+}
+async function enableNotifications(){
+  if(!("Notification" in window)){
+    toast("⚠️","Sem suporte","Este navegador não suporta notificações. Os lembretes aparecerão aqui na tela mesmo assim.");
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  state.notif = perm==="granted"; save();
+  refreshNotifUI();
+  if(perm==="granted"){
+    notify("Vida+ ativado! 💚","Você vai receber seus lembretes de saúde por aqui.","💚");
+  }
+}
+function notify(title, body, emoji){
+  // toast sempre
+  toast(emoji||"🔔", title, body);
+  beep();
+  // notificação do SO se permitido
+  if(("Notification" in window) && Notification.permission==="granted"){
+    try{
+      new Notification(title, {
+        body,
+        tag: title,
+        silent: false,
+        icon: emojiIcon(emoji||"💚")
+      });
+    }catch(e){}
+  }
+}
+function emojiIcon(e){
+  // gera um favicon/ícone via canvas data-url com o emoji
+  try{
+    const c = document.createElement("canvas"); c.width=64;c.height=64;
+    const x = c.getContext("2d");
+    x.font="48px serif"; x.textAlign="center"; x.textBaseline="middle";
+    x.fillText(e,32,36);
+    return c.toDataURL();
+  }catch(err){ return undefined; }
+}
+
+/* ---------- toasts ---------- */
+function toast(emoji,title,body){
+  const el = document.createElement("div");
+  el.className="toast";
+  el.innerHTML = `<div class="te">${emoji}</div><div><b>${esc(title)}</b><p>${esc(body)}</p></div>`;
+  document.getElementById("toasts").appendChild(el);
+  setTimeout(()=>{ el.style.transition=".3s"; el.style.opacity="0"; el.style.transform="translateX(30px)";
+    setTimeout(()=>el.remove(),300); }, 7000);
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  renderSummary();
+  renderTrackers();
+  renderCustom();
+}
+
+function renderSummary(){
+  const t = state.trackers;
+  const pctAll = Math.round(
+    (["water","exercise","meals","breaks"].reduce((a,k)=>{
+      const tr=t[k]; return a + Math.min(1, tr.goal? tr.count/tr.goal : 0);
+    },0)/4)*100
+  );
+  const activeReminders = Object.values(t).filter(x=>x.on).length + state.custom.length;
+  const html = `
+    <div class="stat"><div class="n">${pctAll}%</div><div class="l">Progresso do dia</div></div>
+    <div class="stat"><div class="n">${t.water.count}<span class="muted" style="font-size:14px"> /${t.water.goal}</span></div><div class="l">💧 Copos de água</div></div>
+    <div class="stat"><div class="n">${activeReminders}</div><div class="l">🔔 Lembretes ativos</div></div>
+    <div class="stat"><div class="n">${t.exercise.count>=t.exercise.goal?"✅":"—"}</div><div class="l">🏃 Exercício hoje</div></div>
+  `;
+  document.getElementById("summary").innerHTML = html;
+}
+
+function renderTrackers(){
+  const box = document.getElementById("trackers");
+  box.innerHTML = "";
+  for(const key in TRACKERS){
+    const meta = TRACKERS[key];
+    const tr = state.trackers[key];
+    const isSleep = key==="sleep";
+    const pct = tr.goal ? Math.min(100, Math.round(tr.count/tr.goal*100)) : 0;
+
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML = `
+      <div class="glow"></div>
+      <div class="card-head">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="card-ic" style="background:${meta.color}22;color:${meta.color}">${meta.emoji}</div>
+          <div>
+            <p class="card-title">${meta.title}</p>
+            <p class="card-sub">${meta.sub}</p>
+          </div>
+        </div>
+        <label class="switch" title="Ligar/desligar lembrete">
+          <input type="checkbox" data-on="${key}" ${tr.on?"checked":""}/>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      ${ isSleep ? renderSleepBody(tr) : renderCounterBody(key,meta,tr,pct) }
+    `;
+    box.appendChild(card);
+  }
+  bindTrackerEvents();
+}
+
+function renderCounterBody(key,meta,tr,pct){
+  return `
+      <div class="count-row">
+        <div class="count-big">${tr.count} <span>/ ${tr.goal} ${meta.unit}</span></div>
+        <div class="stepper">
+          <button class="round" data-dec="${key}">−</button>
+          <button class="round plus" data-inc="${key}">+</button>
+        </div>
+      </div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="meta"><span>${pct}% da meta</span><span>${tr.count>=tr.goal?"Meta batida! 🎉":""}</span></div>
+
+      <div class="config-row">
+        <label>Meta diária</label>
+        <input type="number" min="1" value="${tr.goal}" data-goal="${key}"/>
+      </div>
+      <div class="config-row">
+        <label>Lembrar a cada (min)</label>
+        <input type="number" min="1" value="${tr.every}" data-every="${key}"/>
+      </div>
+      <div class="next-fire" data-next="${key}">⏱️ —</div>
+  `;
+}
+
+function renderSleepBody(tr){
+  return `
+      <div class="config-row" style="border-top:none;padding-top:4px">
+        <label>Horário de dormir</label>
+        <input type="time" value="${tr.time||"22:30"}" data-sleeptime="1"/>
+      </div>
+      <div class="next-fire" data-next="sleep">⏱️ —</div>
+      <p class="muted" style="font-size:12px;margin:10px 0 0">Você receberá um aviso 15 min antes para começar a desacelerar.</p>
+  `;
+}
+
+function renderCustom(){
+  const box = document.getElementById("customList");
+  if(!state.custom.length){
+    box.innerHTML = `<p class="muted" style="font-size:13px;margin:0">Nenhum lembrete personalizado ainda. Crie um abaixo 👇</p>`;
+    return;
+  }
+  box.innerHTML = state.custom.map(c=>`
+    <div class="cust">
+      <div class="emoji">${esc(c.emoji)}</div>
+      <div class="info"><b>${esc(c.title)}</b><small>A cada ${c.every} min · <span data-cnext="${c.id}">—</span></small></div>
+      <button class="del" data-del="${c.id}" title="Remover">🗑️</button>
+    </div>
+  `).join("");
+  box.querySelectorAll("[data-del]").forEach(b=>{
+    b.onclick = ()=>{ state.custom = state.custom.filter(c=>c.id!=b.dataset.del); save(); renderCustom(); renderSummary(); };
+  });
+}
+
+/* ---------- eventos dos cards ---------- */
+function bindTrackerEvents(){
+  document.querySelectorAll("[data-inc]").forEach(b=>b.onclick=()=>step(b.dataset.inc,1));
+  document.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>step(b.dataset.dec,-1));
+  document.querySelectorAll("[data-on]").forEach(c=>c.onchange=()=>{
+    state.trackers[c.dataset.on].on = c.checked; save(); renderSummary();
+  });
+  document.querySelectorAll("[data-goal]").forEach(i=>i.onchange=()=>{
+    state.trackers[i.dataset.goal].goal = Math.max(1, parseInt(i.value)||1); save(); render();
+  });
+  document.querySelectorAll("[data-every]").forEach(i=>i.onchange=()=>{
+    state.trackers[i.dataset.every].every = Math.max(1, parseInt(i.value)||1);
+    state.trackers[i.dataset.every].lastFire = now(); save();
+  });
+  const st = document.querySelector("[data-sleeptime]");
+  if(st) st.onchange=()=>{ state.trackers.sleep.time = st.value; state.trackers.sleep.lastFire=0; save(); };
+}
+function step(key,delta){
+  const tr = state.trackers[key];
+  tr.count = Math.max(0, tr.count + delta);
+  if(delta>0) tr.lastFire = now(); // ao registrar, reinicia o contador do lembrete
+  save(); render();
+  if(delta>0 && tr.count===tr.goal){
+    notify(`${TRACKERS[key].title}: meta batida! 🎉`, `Você completou sua meta de hoje. Mandou bem!`, TRACKERS[key].emoji);
+  }
+}
+
+/* ============================================================
+   MOTOR DE LEMBRETES (roda a cada 15s)
+   ============================================================ */
+function tick(){
+  // vira o dia se passou da meia-noite
+  if(state.day !== todayKey()){
+    state = rolloverDay(state); save(); render();
+  }
+
+  const t = now();
+  const d = new Date();
+
+  // trackers com intervalo
+  for(const key in state.trackers){
+    const tr = state.trackers[key];
+    if(key==="sleep") continue;
+    if(!tr.on || !tr.every) continue;
+    if(tr.count>=tr.goal) continue;           // já bateu a meta, não enche o saco
+    if(!tr.lastFire) tr.lastFire = t;
+    if(t - tr.lastFire >= tr.every*60000){
+      tr.lastFire = t; save();
+      const m = TRACKERS[key];
+      notify(reminderMsg(key).title, reminderMsg(key).body, m.emoji);
+    }
+  }
+
+  // sono (horário fixo, avisa 15 min antes)
+  const sl = state.trackers.sleep;
+  if(sl.on && sl.time){
+    const [h,mi] = sl.time.split(":").map(Number);
+    const target = new Date(); target.setHours(h,mi,0,0);
+    const warn = new Date(target.getTime() - 15*60000);
+    const key = todayKey()+"|sleep";
+    if(d>=warn && d<target && sl.lastFire!==hashKey(key+"warn")){
+      sl.lastFire = hashKey(key+"warn"); save();
+      notify("Hora de desacelerar 🌙","Faltam 15 min para dormir. Diminua as telas e relaxe.","😴");
+    }
+  }
+
+  // custom
+  for(const c of state.custom){
+    if(!c.lastFire) c.lastFire = t;
+    if(t - c.lastFire >= c.every*60000){
+      c.lastFire = t; save();
+      notify(c.title, `Lembrete: ${c.title}`, c.emoji);
+    }
+  }
+
+  updateNextFire();
+}
+function hashKey(s){ let h=0; for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0;} return h; }
+
+function reminderMsg(key){
+  const map = {
+    water:    {title:"Hora de beber água 💧", body:"Dê uns goles agora. Seu corpo agradece!"},
+    exercise: {title:"Bora se exercitar 🏃",   body:"Que tal uma caminhada ou alongamento agora?"},
+    meds:     {title:"Lembrete de remédio 💊", body:"Está na hora da sua dose. Não esqueça!"},
+    meals:    {title:"Hora da refeição 🍎",    body:"Pausa para se alimentar bem e com calma."},
+    breaks:   {title:"Levante e alongue 🧘",   body:"Faça uma pausa, estique o corpo e descanse os olhos."}
+  };
+  return map[key] || {title:"Lembrete", body:""};
+}
+
+function updateNextFire(){
+  const t = now();
+  for(const key in state.trackers){
+    const el = document.querySelector(`[data-next="${key}"]`);
+    if(!el) continue;
+    const tr = state.trackers[key];
+    if(key==="sleep"){
+      if(!tr.on || !tr.time){ el.textContent="⏸️ desativado"; continue; }
+      el.textContent = `🌙 Aviso programado para ${tr.time} (15 min antes)`;
+      continue;
+    }
+    if(!tr.on){ el.textContent="⏸️ Lembrete desativado"; continue; }
+    if(tr.count>=tr.goal){ el.textContent="✅ Meta batida — sem mais lembretes hoje"; continue; }
+    const remain = Math.max(0, tr.every*60000 - (t - (tr.lastFire||t)));
+    el.textContent = `⏱️ Próximo lembrete em ${fmtRemain(remain)}`;
+  }
+  // custom
+  for(const c of state.custom){
+    const el = document.querySelector(`[data-cnext="${c.id}"]`);
+    if(!el) continue;
+    const remain = Math.max(0, c.every*60000 - (t - (c.lastFire||t)));
+    el.textContent = `próximo em ${fmtRemain(remain)}`;
+  }
+}
+function fmtRemain(ms){
+  const s = Math.round(ms/1000);
+  if(s<60) return s+"s";
+  const m = Math.floor(s/60), r = s%60;
+  if(m<60) return m+"min"+(r?` ${r}s`:"");
+  const h=Math.floor(m/60), rm=m%60;
+  return h+"h"+(rm?` ${rm}min`:"");
+}
+
+/* ============================================================
+   EVENTOS GERAIS
+   ============================================================ */
+document.getElementById("enableNotif").onclick = enableNotifications;
+
+document.getElementById("resetBtn").onclick = ()=>{
+  if(confirm("Zerar os contadores de hoje? (as configurações são mantidas)")){
+    for(const k in state.trackers){ state.trackers[k].count=0; state.trackers[k].lastFire=now(); }
+    save(); render();
+    toast("↺","Dia zerado","Contadores reiniciados. Bom recomeço!");
+  }
+};
+
+document.getElementById("addCustom").onclick = ()=>{
+  const emoji = document.getElementById("cEmoji").value.trim() || "⏰";
+  const title = document.getElementById("cTitle").value.trim();
+  const every = Math.max(1, parseInt(document.getElementById("cEvery").value)||60);
+  if(!title){ toast("⚠️","Faltou o texto","Escreva o que você quer ser lembrado."); return; }
+  state.custom.push({ id: "c"+hashKey(title+now()+Math.round(performance.now())), emoji, title, every, lastFire: now() });
+  save(); renderCustom(); renderSummary();
+  document.getElementById("cTitle").value="";
+  document.getElementById("cEmoji").value="⏰";
+  document.getElementById("cEvery").value="60";
+  toast(emoji,"Lembrete criado","Você será avisado a cada "+every+" min.");
+};
+
+/* relógio */
+function clock(){
+  const d=new Date();
+  document.getElementById("clock").textContent =
+    String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+}
+
+/* ---------- init ---------- */
+render();
+refreshNotifUI();
+clock();
+updateNextFire();
+setInterval(clock, 1000);
+setInterval(updateNextFire, 1000);
+setInterval(tick, 15000);   // motor de lembretes
+// reidrata lastFire ao abrir
+window.addEventListener("focus", ()=>{ tick(); });
+</script>
+</body>
+</html>

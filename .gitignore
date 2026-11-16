@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Next.js / build
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+
+# Env files (nunca commitar credenciais Supabase etc.)
+.env
+.env.*
+!.env.local.example
+!.env.example
+
+# Vercel
+.vercel
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.pem
