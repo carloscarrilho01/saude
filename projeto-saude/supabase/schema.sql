@@ -226,3 +226,144 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- ============================================================
+-- COMUNIDADE — FASE 1: MURAL DE PLANOS (RF-5.10)
+-- Só a ESTRUTURA do plano é pública. Nunca fotos, progresso ou perfil de saúde.
+-- Leitura pública (anon) das publicações ativas; escrita só autenticado e só o
+-- que é seu. Contadores e ocultação por denúncia são mantidos por triggers
+-- (security definer) — o cliente não consegue alterá-los.
+-- ============================================================
+create table if not exists public.mural_planos (
+  id uuid primary key default gen_random_uuid(),
+  autor_id uuid not null references auth.users (id) on delete cascade,
+  apelido text not null check (char_length(apelido) between 2 and 24),
+  oficial boolean not null default false,
+  nome text not null check (char_length(nome) between 3 and 60),
+  descricao text not null check (char_length(descricao) between 10 and 280),
+  objetivo text not null check (objetivo in ('perder','manter','ganhar','hidratacao')),
+  duracao_dias int not null check (duracao_dias between 1 and 365),
+  -- [{tipo, horario, descricao}] — validado também no cliente (lib/mural/regras.ts)
+  refeicoes jsonb not null check (jsonb_typeof(refeicoes) = 'array' and jsonb_array_length(refeicoes) between 1 and 12),
+  status text not null default 'publicado' check (status in ('publicado','oculto','removido')),
+  salvamentos int not null default 0,
+  uteis int not null default 0,
+  denuncias int not null default 0,
+  publicado_em timestamptz not null default now()
+);
+-- feed: publicações ativas por data ou por salvamentos
+create index if not exists mural_planos_feed_recentes_idx on public.mural_planos (publicado_em desc) where status = 'publicado';
+create index if not exists mural_planos_feed_salvos_idx on public.mural_planos (salvamentos desc) where status = 'publicado';
+create index if not exists mural_planos_autor_idx on public.mural_planos (autor_id);
+
+create table if not exists public.mural_uteis (
+  plano_id uuid not null references public.mural_planos (id) on delete cascade,
+  usuario_id uuid not null references auth.users (id) on delete cascade,
+  criado_em timestamptz not null default now(),
+  primary key (plano_id, usuario_id)
+);
+create index if not exists mural_uteis_usuario_idx on public.mural_uteis (usuario_id);
+
+create table if not exists public.mural_salvamentos (
+  plano_id uuid not null references public.mural_planos (id) on delete cascade,
+  usuario_id uuid not null references auth.users (id) on delete cascade,
+  criado_em timestamptz not null default now(),
+  primary key (plano_id, usuario_id)
+);
+create index if not exists mural_salvamentos_usuario_idx on public.mural_salvamentos (usuario_id);
+
+create table if not exists public.mural_denuncias (
+  id uuid primary key default gen_random_uuid(),
+  plano_id uuid not null references public.mural_planos (id) on delete cascade,
+  usuario_id uuid not null references auth.users (id) on delete cascade,
+  motivo text not null check (motivo in ('saude','spam','ofensivo','outro')),
+  criado_em timestamptz not null default now(),
+  resolvida_em timestamptz,
+  unique (plano_id, usuario_id)
+);
+create index if not exists mural_denuncias_pendentes_idx on public.mural_denuncias (criado_em) where resolvida_em is null;
+create index if not exists mural_denuncias_usuario_idx on public.mural_denuncias (usuario_id);
+
+alter table public.mural_planos enable row level security;
+alter table public.mural_uteis enable row level security;
+alter table public.mural_salvamentos enable row level security;
+alter table public.mural_denuncias enable row level security;
+
+-- publicações: todos leem as ativas; o autor também vê as suas
+drop policy if exists mural_planos_ler on public.mural_planos;
+create policy mural_planos_ler on public.mural_planos for select
+  using (status = 'publicado' or autor_id = (select auth.uid()));
+drop policy if exists mural_planos_publicar on public.mural_planos;
+create policy mural_planos_publicar on public.mural_planos for insert to authenticated
+  with check (autor_id = (select auth.uid()) and oficial = false and status = 'publicado'
+              and salvamentos = 0 and uteis = 0 and denuncias = 0);
+-- o autor só pode remover a própria publicação (status → 'removido'); demais colunas protegidas pelo trigger abaixo
+drop policy if exists mural_planos_remover on public.mural_planos;
+create policy mural_planos_remover on public.mural_planos for update to authenticated
+  using (autor_id = (select auth.uid()))
+  with check (autor_id = (select auth.uid()) and status = 'removido');
+
+create or replace function public.mural_proteger_colunas()
+returns trigger language plpgsql set search_path = '' as $$
+begin
+  -- atualizações feitas pelos triggers de contagem (profundidade > 1) passam
+  if pg_trigger_depth() > 1 then
+    return new;
+  end if;
+  -- usuários comuns só mudam o status; contadores e conteúdo ficam como estavam
+  if (select auth.role()) = 'authenticated' then
+    new := jsonb_populate_record(old, jsonb_build_object('status', new.status));
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists mural_proteger_colunas on public.mural_planos;
+create trigger mural_proteger_colunas before update on public.mural_planos
+  for each row execute function public.mural_proteger_colunas();
+
+-- interações: cada um vê e mexe só nas suas
+drop policy if exists mural_uteis_own on public.mural_uteis;
+create policy mural_uteis_own on public.mural_uteis for all to authenticated
+  using (usuario_id = (select auth.uid())) with check (usuario_id = (select auth.uid()));
+drop policy if exists mural_salvamentos_own on public.mural_salvamentos;
+create policy mural_salvamentos_own on public.mural_salvamentos for all to authenticated
+  using (usuario_id = (select auth.uid())) with check (usuario_id = (select auth.uid()));
+-- denúncia: insere e vê só as suas; não dá para denunciar o próprio plano
+drop policy if exists mural_denuncias_inserir on public.mural_denuncias;
+create policy mural_denuncias_inserir on public.mural_denuncias for insert to authenticated
+  with check (usuario_id = (select auth.uid())
+              and not exists (select 1 from public.mural_planos p where p.id = plano_id and p.autor_id = (select auth.uid())));
+drop policy if exists mural_denuncias_ler on public.mural_denuncias;
+create policy mural_denuncias_ler on public.mural_denuncias for select to authenticated
+  using (usuario_id = (select auth.uid()));
+
+-- contadores mantidos pelo banco
+create or replace function public.mural_contar()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare
+  alvo uuid := coalesce(new.plano_id, old.plano_id);
+  delta int := case when tg_op = 'INSERT' then 1 else -1 end;
+begin
+  if tg_table_name = 'mural_uteis' then
+    update public.mural_planos set uteis = greatest(0, uteis + delta) where id = alvo;
+  elsif tg_table_name = 'mural_salvamentos' then
+    update public.mural_planos set salvamentos = greatest(0, salvamentos + delta) where id = alvo;
+  elsif tg_table_name = 'mural_denuncias' and tg_op = 'INSERT' then
+    -- 3 denúncias de pessoas diferentes ocultam até revisão manual
+    update public.mural_planos
+      set denuncias = denuncias + 1,
+          status = case when denuncias + 1 >= 3 and status = 'publicado' then 'oculto' else status end
+      where id = alvo;
+  end if;
+  return null;
+end;
+$$;
+drop trigger if exists mural_uteis_contar on public.mural_uteis;
+create trigger mural_uteis_contar after insert or delete on public.mural_uteis
+  for each row execute function public.mural_contar();
+drop trigger if exists mural_salvamentos_contar on public.mural_salvamentos;
+create trigger mural_salvamentos_contar after insert or delete on public.mural_salvamentos
+  for each row execute function public.mural_contar();
+drop trigger if exists mural_denuncias_contar on public.mural_denuncias;
+create trigger mural_denuncias_contar after insert on public.mural_denuncias
+  for each row execute function public.mural_contar();

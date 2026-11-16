@@ -36,6 +36,8 @@ const CHAVES = {
   resumoVisto: "saude.resumoVisto", // segunda-feira da semana cujo resumo foi fechado
   consentimentoFotos: "saude.consentimentoFotos", // ISO do aceite (fotos ficam só no aparelho)
   planoPendente: "saude.planoPendente", // plano recebido por link antes de existir perfil
+  mural: "saude.mural", // mural no modo local (lib/mural/local.ts usa a mesma chave)
+  apelidoMural: "saude.apelidoMural", // apelido público usado ao publicar
 } as const;
 
 const disponivel = () => typeof window !== "undefined";
@@ -574,6 +576,8 @@ export interface ExportacaoDados {
   historicoMetas: MetaAgua[];
   climaDoDia: Record<string, Clima>;
   recipientes: Recipiente[];
+  muralLocal: unknown;
+  apelidoMural: string | null;
 }
 
 /** Reúne todos os dados do usuário num objeto legível (para download em JSON). */
@@ -592,6 +596,8 @@ export function exportarDados(): ExportacaoDados {
     historicoMetas: getHistoricoMetas(),
     climaDoDia: ler<Record<string, Clima>>(CHAVES.climaDoDia) ?? {},
     recipientes: getRecipientes(),
+    muralLocal: ler<unknown>(CHAVES.mural),
+    apelidoMural: getApelidoMural(),
   };
 }
 
@@ -644,4 +650,13 @@ export function definirPlanoPendente(codigo: string | null) {
     window.localStorage.removeItem(CHAVES.planoPendente);
     notificar();
   }
+}
+
+// --- Apelido público do mural ---
+
+export function getApelidoMural(): string | null {
+  return ler<string>(CHAVES.apelidoMural);
+}
+export function salvarApelidoMural(apelido: string) {
+  escrever(CHAVES.apelidoMural, apelido);
 }

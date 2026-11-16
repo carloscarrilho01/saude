@@ -233,3 +233,31 @@ export const IconeLink = (p: P) => (
     <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
   </svg>
 );
+
+export const IconeUtil = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M7 10v10H4.5A1.5 1.5 0 0 1 3 18.5v-7A1.5 1.5 0 0 1 4.5 10H7Z" />
+    <path d="M7 10l4-7a2.2 2.2 0 0 1 2.6 2.6L13 9.5h5.3a2 2 0 0 1 2 2.3l-1.1 6.5a2 2 0 0 1-2 1.7H7" />
+  </svg>
+);
+
+export const IconeMarcador = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M6.5 3.5h11a1 1 0 0 1 1 1V21l-6.5-4.2L5.5 21V4.5a1 1 0 0 1 1-1Z" />
+  </svg>
+);
+
+export const IconeBandeira = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M5 21V4" />
+    <path d="M5 4.5c3-1.5 5.5 1.5 8.5 0s4.5-.5 5.5 0v9c-1-.5-2.5-1.5-5.5 0s-5.5-1.5-8.5 0" />
+  </svg>
+);
+
+export const IconePessoas = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="9" cy="8" r="3.2" />
+    <path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" />
+    <path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.8c1.8.8 3 2.6 3 5.2" />
+  </svg>
+);

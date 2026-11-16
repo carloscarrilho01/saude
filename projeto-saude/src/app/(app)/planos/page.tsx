@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import VitrineModelos from "@/components/VitrineModelos";
+import MuralFeed from "@/components/mural/MuralFeed";
 import { IconeMais } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
@@ -19,6 +20,8 @@ import { aderenciaDoDia } from "@/lib/aderencia";
 import { nomeObjetivo } from "@/lib/refeicoes";
 import type { Regime, StatusRegime } from "@/lib/tipos";
 
+type Aba = "meus" | "explorar" | "comunidade";
+
 export default function PaginaPlanos() {
   return (
     <Suspense fallback={<div className="p-6 text-tinta-2">Carregando…</div>}>
@@ -31,8 +34,9 @@ function ConteudoPlanos() {
   const pronto = useStorePronto();
   const router = useRouter();
   // aba na URL: voltar do detalhe de um modelo retorna para "Explorar"
-  const aba: "meus" | "explorar" = useSearchParams().get("aba") === "explorar" ? "explorar" : "meus";
-  const setAba = (a: "meus" | "explorar") => router.replace(a === "explorar" ? "/planos?aba=explorar" : "/planos", { scroll: false });
+  const param = useSearchParams().get("aba");
+  const aba: Aba = param === "explorar" || param === "comunidade" ? param : "meus";
+  const setAba = (a: Aba) => router.replace(a === "meus" ? "/planos" : `/planos?aba=${a}`, { scroll: false });
 
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
@@ -43,8 +47,8 @@ function ConteudoPlanos() {
       <TopoFolha />
       <h1 className="relative mb-4 text-center text-xl font-extrabold text-tinta">Planos (Regimes)</h1>
 
-      <div className="mx-auto mb-5 flex max-w-xs rounded-full bg-black/5 p-1">
-        {(["meus", "explorar"] as const).map((a) => (
+      <div className="mx-auto mb-5 flex max-w-sm rounded-full bg-black/5 p-1">
+        {(["meus", "explorar", "comunidade"] as const).map((a) => (
           <button
             key={a}
             aria-pressed={aba === a}
@@ -53,12 +57,14 @@ function ConteudoPlanos() {
               aba === a ? "bg-brand text-white" : "text-tinta-2"
             }`}
           >
-            {a === "meus" ? "Meus planos" : "Explorar"}
+            {a === "meus" ? "Meus planos" : a === "explorar" ? "Modelos" : "Comunidade"}
           </button>
         ))}
       </div>
 
-      {aba === "explorar" ? (
+      {aba === "comunidade" ? (
+        <MuralFeed />
+      ) : aba === "explorar" ? (
         <VitrineModelos />
       ) : regimes.length === 0 ? (
         <div className="rounded-[var(--radius-card)] bg-card p-8 text-center shadow-[var(--shadow-card)]">
@@ -83,12 +89,14 @@ function ConteudoPlanos() {
         </ul>
       )}
 
+      {aba !== "comunidade" && (
       <Link
         href="/planos/novo"
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand/40 py-4 text-sm font-semibold text-brand"
       >
         <IconeMais width={18} height={18} /> {aba === "explorar" ? "Prefiro criar do zero" : "Criar novo plano"}
       </Link>
+      )}
     </div>
   );
 }

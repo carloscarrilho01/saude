@@ -31,7 +31,7 @@ Um web app onde o usuário cria sua conta, informa seus dados (peso, altura, ida
 - Contagem avançada de calorias por foto/IA de imagem.
 - Integração com wearables (Apple Watch, Fitbit, etc.).
 - Receitas e lista de compras.
-- Rede social / comparação entre usuários. (Compartilhar um plano por link — RF-5.9 — é permitido; feed, perfis públicos e interações entre usuários continuam fora da v1 e dependem de backend, moderação e revisão de privacidade.)
+- Rede social / comparação entre usuários. (Exceções na v1: compartilhar plano por link — RF-5.9 — e o mural de planos — RF-5.10, comunidade fase 1. Perfis públicos, seguidores, comentários, grupos e fotos públicas continuam fora da v1 e dependem de moderação e revisão de privacidade.)
 - Prescrição médica ou diagnóstico (ver seção 11 — Disclaimer).
 
 ---
@@ -210,6 +210,7 @@ O app deve detectar suporte e permissão em tempo de execução e exibir o estad
 - RF-5.6: Histórico de regimes anteriores.
 - RF-5.8: Fotos de progresso por regime (opcional para o usuário): comparação "início × agora". **Na v1 as fotos ficam só no aparelho** (IndexedDB), com consentimento explícito antes da primeira foto, remoção de metadados (EXIF/GPS) e inclusão em exportar/excluir dados (§4.1). Envio à nuvem exige novo consentimento e revisão de privacidade.
 - RF-5.9: Compartilhar um regime por link: leva só a estrutura (nome, objetivo, duração, refeições) — nunca fotos, progresso ou perfil. Quem recebe vê o plano e pode adicioná-lo aos próprios planos. Não é rede social (ver §1.4).
+- RF-5.10: **Comunidade — fase 1: mural de planos** (decisão de produto, nov/2026). Publicar um plano (apelido, nome, descrição, refeições) por escolha explícita; feed com filtro por objetivo e ordem por recentes/mais salvos; salvar nos próprios planos; marcar "útil"; denunciar (3 denúncias de pessoas diferentes ocultam até revisão); autor pode tirar do mural. **Nunca** publica fotos, aderência ou dados de saúde. Texto sem links/contatos e sem promessa de resultado. Requer Supabase (leitura pública, escrita autenticada, contadores mantidos pelo banco — `supabase/schema.sql`); sem servidor, o mural roda em modo local (modelos oficiais + o que o usuário publicou). Fases 2 (perfis, grupos de desafio, comentários) e 3 (fotos públicas) seguem fora da v1.
 - RF-5.7: Modelos prontos de regime para o usuário clonar (aba "Explorar"). **Antecipado para a v1 por decisão de produto (nov/2026).** Os modelos são rotinas de organização (horários + tipos de refeição, sem calorias ou porções), baseados no Guia Alimentar para a População Brasileira, e devem passar pela mesma revisão profissional da §10.1 antes do lançamento.
 
 **Regras de ativação e encerramento:**

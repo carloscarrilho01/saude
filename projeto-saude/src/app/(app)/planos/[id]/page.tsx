@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IconeSetaEsq, IconeCheck, IconeLapis, IconeRefeicao } from "@/components/icons";
+import { IconeSetaEsq, IconeCheck, IconeLapis, IconeRefeicao, IconePessoas } from "@/components/icons";
 import EditorPlano from "@/components/EditorPlano";
 import FotosProgresso from "@/components/FotosProgresso";
 import BotaoCompartilharPlano from "@/components/BotaoCompartilharPlano";
+import PublicarPlano from "@/components/mural/PublicarPlano";
 import { useStorePronto } from "@/lib/hooks";
 import {
   getRegime,
@@ -29,6 +30,7 @@ export default function DetalhePlano() {
   const params = useParams();
   const id = String(params.id);
   const [editando, setEditando] = useState(false);
+  const [publicando, setPublicando] = useState(false);
 
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
@@ -140,7 +142,19 @@ export default function DetalhePlano() {
 
       <FotosProgresso regime={regime} />
 
-      {refeicoes.length > 0 && <BotaoCompartilharPlano regime={regime} refeicoes={refeicoes} />}
+      {refeicoes.length > 0 && (
+        <>
+          <button
+            type="button"
+            onClick={() => setPublicando(true)}
+            className="toque mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-brand/10 py-3.5 text-sm font-semibold text-brand"
+          >
+            <IconePessoas width={18} height={18} aria-hidden /> Publicar na comunidade
+          </button>
+          <BotaoCompartilharPlano regime={regime} refeicoes={refeicoes} />
+        </>
+      )}
+      {publicando && <PublicarPlano regime={regime} refeicoes={refeicoes} aoFechar={() => setPublicando(false)} />}
 
       {/* ações */}
       <div className="mt-6 space-y-2">

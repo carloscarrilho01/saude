@@ -39,3 +39,14 @@ seus (criar a conta/projeto) porque eu não tenho como logar na sua conta.
   enquanto não existem, o app segue no localStorage (nada quebra).
 - `supabase/schema.sql` — schema completo com RLS e índices (boas práticas).
 - `.env.local.example` — modelo das variáveis.
+- **Mural de planos (Comunidade, fase 1)** — tabelas `mural_*` no mesmo `schema.sql`,
+  com leitura pública, escrita só autenticada, contadores e ocultação por denúncia
+  mantidos por triggers. O schema foi executado e as regras de RLS testadas num
+  Postgres 16 local com um `auth` simulado (publicar como outra pessoa, forjar selo
+  oficial, inflar contador, autodenúncia e denúncia dupla são bloqueados; 3 denúncias
+  ocultam). A camada `src/lib/mural/supabase.ts` ainda **não foi testada contra um
+  projeto Supabase real** — validar assim que houver chaves. Ela depende do login
+  (passo 1 acima) para publicar, marcar útil, salvar e denunciar.
+- **Moderação:** denúncias ficam em `mural_denuncias` (`resolvida_em` nulo =
+  pendente). Até existir um painel, revisar pelo Table Editor do Supabase: para
+  liberar, mude `status` de `oculto` para `publicado`; para remover, `removido`.
