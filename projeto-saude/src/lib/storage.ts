@@ -19,6 +19,7 @@ import type {
 import { CONFIG_LEMBRETES_PADRAO } from "./lembretes";
 import { metaComClimaDoDia } from "./hidratacao";
 import { apagarTodasAsFotos, removerFotosDoRegime } from "./fotos";
+import type { Caminhada } from "./caminhada";
 
 const CHAVES = {
   perfil: "saude.perfil",
@@ -38,6 +39,9 @@ const CHAVES = {
   planoPendente: "saude.planoPendente", // plano recebido por link antes de existir perfil
   mural: "saude.mural", // mural no modo local (lib/mural/local.ts usa a mesma chave)
   apelidoMural: "saude.apelidoMural", // apelido público usado ao publicar
+  caminhadas: "saude.caminhadas",
+  caminhadaAtiva: "saude.caminhadaAtiva", // sessão em andamento (recupera após recarregar)
+  consentimentoLocalizacao: "saude.consentimentoLocalizacao",
 } as const;
 
 const disponivel = () => typeof window !== "undefined";
@@ -578,6 +582,7 @@ export interface ExportacaoDados {
   recipientes: Recipiente[];
   muralLocal: unknown;
   apelidoMural: string | null;
+  caminhadas: Caminhada[];
 }
 
 /** Reúne todos os dados do usuário num objeto legível (para download em JSON). */
@@ -598,6 +603,7 @@ export function exportarDados(): ExportacaoDados {
     recipientes: getRecipientes(),
     muralLocal: ler<unknown>(CHAVES.mural),
     apelidoMural: getApelidoMural(),
+    caminhadas: getCaminhadas(),
   };
 }
 
@@ -659,4 +665,38 @@ export function getApelidoMural(): string | null {
 }
 export function salvarApelidoMural(apelido: string) {
   escrever(CHAVES.apelidoMural, apelido);
+}
+
+// --- Caminhadas (GPS) — ficam só no aparelho ---
+
+/** Mais recentes primeiro. */
+export function getCaminhadas(): Caminhada[] {
+  return (ler<Caminhada[]>(CHAVES.caminhadas) ?? []).sort((a, b) => b.inicioEm.localeCompare(a.inicioEm));
+}
+export function getCaminhada(id: string): Caminhada | undefined {
+  return getCaminhadas().find((c) => c.id === id);
+}
+export function salvarCaminhada(c: Caminhada) {
+  escrever(CHAVES.caminhadas, [c, ...getCaminhadas().filter((x) => x.id !== c.id)]);
+}
+export function removerCaminhada(id: string) {
+  escrever(CHAVES.caminhadas, getCaminhadas().filter((c) => c.id !== id));
+}
+/** Apaga o percurso (coordenadas) e mantém só distância e tempo. */
+export function apagarPercursoCaminhada(id: string) {
+  escrever(CHAVES.caminhadas, getCaminhadas().map((c) => (c.id === id ? { ...c, trechos: [] } : c)));
+}
+export function getSessaoCaminhada<T>(): T | null {
+  return ler<T>(CHAVES.caminhadaAtiva);
+}
+export function gravarSessaoCaminhada<T>(sessao: T | null) {
+  if (!disponivel()) return;
+  if (sessao) window.localStorage.setItem(CHAVES.caminhadaAtiva, JSON.stringify(sessao));
+  else window.localStorage.removeItem(CHAVES.caminhadaAtiva);
+}
+export function getConsentimentoLocalizacao(): string | null {
+  return ler<string>(CHAVES.consentimentoLocalizacao);
+}
+export function registrarConsentimentoLocalizacao() {
+  escrever(CHAVES.consentimentoLocalizacao, new Date().toISOString());
 }

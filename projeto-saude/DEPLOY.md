@@ -32,6 +32,7 @@ Nunca colocar a `service_role` em variável `NEXT_PUBLIC_*`.
 - `/inicio`, `/agua`, `/diario`, `/planos`, `/perfil`, `/conquistas`… — o app (PWA, `start_url` = `/inicio`)
 - `/registrar?ml=250` — destino dos atalhos do ícone (manifest `shortcuts`): registra e abre `/agua`
 - `/importar#p=…` — destino do link "Compartilhar plano" (fora do grupo `(app)`, abre sem conta)
+- `/caminhada` — caminhada com GPS (precisa de HTTPS; em produção a Vercel já serve em HTTPS)
 
 ## Checklist antes de promover para produção
 - [ ] `npm run lint` e `npm run build` sem erros

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ComponentType, SVGProps } from "react";
-import { IconePessoa, IconeSetaDir, IconeAlvo, IconeSino, IconeGrafico, IconeTrofeu, IconeCadeado } from "@/components/icons";
+import { IconePessoa, IconeSetaDir, IconeAlvo, IconeSino, IconeGrafico, IconeTrofeu, IconeCadeado, IconeTenis } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import { getPerfil, getMeta, limparTudo } from "@/lib/storage";
@@ -55,6 +55,7 @@ export default function PaginaPerfil() {
         <LinhaLink href="/lembretes" rotulo="Lembretes" Icone={IconeSino} />
         <LinhaLink href="/relatorios" rotulo="Relatórios" Icone={IconeGrafico} />
         <LinhaLink href="/conquistas" rotulo="Consistência e conquistas" Icone={IconeTrofeu} />
+        <LinhaLink href="/caminhada" rotulo="Caminhadas" Icone={IconeTenis} />
         <LinhaLink href="/perfil/privacidade" rotulo="Privacidade e dados" Icone={IconeCadeado} ultima />
       </div>
 

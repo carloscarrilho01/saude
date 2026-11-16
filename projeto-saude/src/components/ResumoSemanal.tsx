@@ -27,7 +27,7 @@ export default function ResumoSemanal({ dias }: { dias: DiaConsumo[] }) {
     new Intl.DateTimeFormat("pt-BR", { weekday: "long", timeZone: "UTC" }).format(new Date(`${data}T12:00:00Z`));
 
   return (
-    <section aria-labelledby="resumo-titulo" style={{ "--i": 3 } as React.CSSProperties} className="surgir relative mt-4 rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
+    <section aria-labelledby="resumo-titulo" style={{ "--i": 4 } as React.CSSProperties} className="surgir relative mt-4 rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => marcarResumoVisto(segundaAtual)}

@@ -24,6 +24,7 @@ import {
 } from "@/lib/storage";
 import { calcularSequencia } from "@/lib/habitos";
 import ResumoSemanal from "@/components/ResumoSemanal";
+import CartaoCaminhada from "@/components/caminhada/CartaoCaminhada";
 import { formatarLitros, percentualMeta } from "@/lib/hidratacao";
 import { aderenciaDoDia, refeicaoConcluida } from "@/lib/aderencia";
 import { proximoLembrete } from "@/lib/lembretes";
@@ -164,6 +165,8 @@ export default function Dashboard() {
           href="/conquistas"
         />
       </section>
+
+      <CartaoCaminhada />
 
       <ResumoSemanal dias={historico120.slice(-21)} />
 

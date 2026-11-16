@@ -261,3 +261,36 @@ export const IconePessoas = (p: P) => (
     <path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.8c1.8.8 3 2.6 3 5.2" />
   </svg>
 );
+
+export const IconeTenis = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M3 16.5V13c0-.6.5-1 1-1 1.5 0 2.7-.6 3.5-2l1.2-2.2a1 1 0 0 1 1.5-.3l1.3 1c.9.7 2.1.6 2.9-.2l.4-.4 2.4 3.3c.6.9 1.6 1.4 2.7 1.6.6.1 1.1.6 1.1 1.2v2.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z" />
+    <path d="M3 15h18M9 11.5l1.5 1M11.5 10l1.5 1" />
+  </svg>
+);
+
+export const IconePlay = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M8 5.5v13l10.5-6.5L8 5.5Z" fill="currentColor" />
+  </svg>
+);
+
+export const IconePausa = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="7" y="5" width="3.5" height="14" rx="1" fill="currentColor" />
+    <rect x="13.5" y="5" width="3.5" height="14" rx="1" fill="currentColor" />
+  </svg>
+);
+
+export const IconeParar = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" />
+  </svg>
+);
+
+export const IconeLocal = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+    <circle cx="12" cy="10" r="2.4" />
+  </svg>
+);

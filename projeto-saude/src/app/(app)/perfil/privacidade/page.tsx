@@ -39,6 +39,7 @@ export default function PaginaPrivacidade() {
     { rotulo: "Itens do diário", n: dados.itensDiario.length },
     { rotulo: "Planos alimentares", n: dados.regimes.length },
     { rotulo: "Fotos de progresso", n: qtdFotos ?? "…" },
+    { rotulo: "Caminhadas", n: dados.caminhadas.length },
   ];
 
   async function baixar() {
@@ -104,7 +105,7 @@ export default function PaginaPrivacidade() {
       <h2 className="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">Exportar</h2>
       <div className="rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
         <p className="text-sm text-tinta-2">
-          Baixe uma cópia completa (perfil, meta, água, diário, planos, lembretes e fotos) em JSON.
+          Baixe uma cópia completa (perfil, meta, água, diário, planos, lembretes, fotos e caminhadas) em JSON.
         </p>
         <button type="button" onClick={baixar}
           className="mt-4 w-full rounded-2xl bg-brand py-3.5 text-sm font-semibold text-white active:scale-[.99]">

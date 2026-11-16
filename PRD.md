@@ -277,7 +277,18 @@ Aderência semanal (%) = (soma das refeições concluídas nos 7 dias ÷ soma da
 
 ---
 
-### 3.7 Dashboard / Painel
+### 3.6.1 Caminhada com GPS (adicionado por decisão de produto, nov/2026)
+**Descrição:** gravar caminhadas com o GPS do aparelho e acompanhar os quilômetros.
+
+- RF-6.10: Iniciar, pausar, continuar e finalizar uma caminhada; mostrar distância, tempo em movimento e ritmo (min/km) ao vivo.
+- RF-6.11: Filtrar leituras ruins do GPS (precisão > 35 m, saltos acima de ~25 km/h, ruído < 4 m); o deslocamento durante a pausa não conta.
+- RF-6.12: Histórico com km da semana; percurso guardado simplificado.
+- RF-6.13: Compartilhar como imagem (km, tempo, ritmo, data e, opcionalmente, só a forma do percurso) — **nunca mapa, endereço ou coordenadas**.
+- **Privacidade:** consentimento antes do primeiro uso; GPS ligado só enquanto grava; dados só no aparelho na v1; entra em exportar/excluir (§4.1); dá para apagar o percurso e manter os números.
+- **Limitação de plataforma:** como PWA, a localização só chega com o app aberto na tela (Wake Lock mantém a tela acesa). Rastreio com tela bloqueada exige o app nativo (Capacitor + geolocalização em segundo plano).
+- Sem estimativa de calorias (exigiria parâmetros clínicos não validados).
+
+
 **Descrição:** Tela inicial que resume o dia do usuário.
 
 **Elementos:**
