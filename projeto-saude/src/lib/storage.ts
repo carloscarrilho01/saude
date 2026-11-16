@@ -12,8 +12,12 @@ import type {
   RefeicaoPlanejada,
   ConclusaoRefeicao,
   ConfigLembretes,
+  Clima,
+  Recipiente,
+  DiaConsumo,
 } from "./tipos";
 import { CONFIG_LEMBRETES_PADRAO } from "./lembretes";
+import { metaComClimaDoDia } from "./hidratacao";
 
 const CHAVES = {
   perfil: "saude.perfil",
@@ -24,6 +28,11 @@ const CHAVES = {
   refeicoesPlanejadas: "saude.refeicoesPlanejadas",
   conclusoes: "saude.conclusoes",
   configLembretes: "saude.configLembretes",
+  historicoMetas: "saude.historicoMetas", // RF-2.6: cada meta com validoDesde
+  climaDoDia: "saude.climaDoDia", // { "YYYY-MM-DD": Clima }
+  recipientes: "saude.recipientes",
+  celebradoEm: "saude.celebradoEm", // data local da última celebração de meta
+  resumoVisto: "saude.resumoVisto", // segunda-feira da semana cujo resumo foi fechado
 } as const;
 
 const disponivel = () => typeof window !== "undefined";
@@ -112,8 +121,67 @@ export function getMeta(): MetaAgua | null {
   return ler<MetaAgua>(CHAVES.meta);
 }
 
+/** Salva a meta vigente e a acrescenta ao histórico (RF-2.6). */
 export function salvarMeta(meta: MetaAgua) {
+  const historico = ler<MetaAgua[]>(CHAVES.historicoMetas) ?? [];
+  if (!historico.length) {
+    // primeira gravação com histórico: a meta anterior passa a valer "desde sempre"
+    const anterior = getMeta();
+    if (anterior) historico.push({ ...anterior, validoDesde: new Date(0).toISOString() });
+  }
+  historico.push(meta);
+  if (disponivel()) window.localStorage.setItem(CHAVES.historicoMetas, JSON.stringify(historico));
   escrever(CHAVES.meta, meta);
+}
+
+/** Histórico de metas em ordem cronológica (inclui a vigente). */
+export function getHistoricoMetas(): MetaAgua[] {
+  const historico = ler<MetaAgua[]>(CHAVES.historicoMetas);
+  if (historico?.length) return historico;
+  const atual = getMeta();
+  return atual ? [{ ...atual, validoDesde: new Date(0).toISOString() }] : [];
+}
+
+const META_PADRAO_ML = 2000;
+
+function dataLocalDe(iso: string, fuso?: string): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: fuso || fusoDoNavegador() }).format(new Date(iso));
+}
+
+/** Meta que valia em um dia, antes do ajuste de clima do dia. */
+function metaVigenteEm(dataLocal: string, historico: MetaAgua[], fuso?: string): MetaAgua | null {
+  let vigente: MetaAgua | null = null;
+  for (const m of historico) {
+    if (dataLocalDe(m.validoDesde, fuso) <= dataLocal) vigente = m;
+  }
+  return vigente ?? historico[0] ?? null;
+}
+
+/** Meta efetiva (ml) de um dia: meta vigente + clima informado para o dia. */
+export function metaDoDia(dataLocal?: string): number {
+  const fuso = getPerfil()?.fuso;
+  const dia = dataLocal || dataLocalHoje(fuso);
+  const meta = metaVigenteEm(dia, getHistoricoMetas(), fuso);
+  if (!meta) return META_PADRAO_ML;
+  return metaComClimaDoDia(meta, getClimaDoDia(dia));
+}
+
+// --- Clima do dia (ajuste pontual, PRD §3.2: clima informado pelo usuário) ---
+
+export function getClimaDoDia(dataLocal?: string): Clima | null {
+  const dia = dataLocal || dataLocalHoje(getPerfil()?.fuso);
+  return ler<Record<string, Clima>>(CHAVES.climaDoDia)?.[dia] ?? null;
+}
+
+/** Define (ou limpa, com null) o clima só para um dia. Guarda os últimos 400 dias. */
+export function definirClimaDoDia(clima: Clima | null, dataLocal?: string) {
+  const dia = dataLocal || dataLocalHoje(getPerfil()?.fuso);
+  const mapa = { ...(ler<Record<string, Clima>>(CHAVES.climaDoDia) ?? {}) };
+  if (clima) mapa[dia] = clima;
+  else delete mapa[dia];
+  const chaves = Object.keys(mapa).sort();
+  for (const k of chaves.slice(0, Math.max(0, chaves.length - 400))) delete mapa[k];
+  escrever(CHAVES.climaDoDia, mapa);
 }
 
 // --- Registros de água ---
@@ -165,21 +233,71 @@ export function editarRegistroAgua(id: string, quantidadeMl: number) {
   );
 }
 
-/** Consumo diário agregado dos últimos N dias (para gráficos). */
-export function consumoUltimosDias(n: number, fuso?: string): { data: string; totalMl: number }[] {
+/**
+ * Consumo diário dos últimos N dias (o último é hoje), com a meta que valia
+ * em cada dia — base para gráficos, sequência e resumo semanal.
+ */
+export function consumoUltimosDias(n: number, fuso?: string): DiaConsumo[] {
   const tz = fuso || getPerfil()?.fuso;
-  const todos = getTodosRegistros();
-  const dias: { data: string; totalMl: number }[] = [];
+  const porDia = new Map<string, number>();
+  for (const r of getTodosRegistros()) porDia.set(r.dataLocal, (porDia.get(r.dataLocal) ?? 0) + r.quantidadeMl);
+  const historico = getHistoricoMetas();
+  const climas = ler<Record<string, Clima>>(CHAVES.climaDoDia) ?? {};
+  const dias: DiaConsumo[] = [];
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dia = new Intl.DateTimeFormat("en-CA", { timeZone: tz }).format(d);
-    const totalMl = todos
-      .filter((r) => r.dataLocal === dia)
-      .reduce((s, r) => s + r.quantidadeMl, 0);
-    dias.push({ data: dia, totalMl });
+    const meta = metaVigenteEm(dia, historico, tz);
+    dias.push({
+      data: dia,
+      totalMl: porDia.get(dia) ?? 0,
+      metaMl: meta ? metaComClimaDoDia(meta, climas[dia]) : META_PADRAO_ML,
+    });
   }
   return dias;
+}
+
+/** Totais de todo o histórico de água (para conquistas). */
+export function estatisticasAgua(): { totalRegistros: number; totalMl: number } {
+  const todos = getTodosRegistros();
+  return { totalRegistros: todos.length, totalMl: todos.reduce((s, r) => s + r.quantidadeMl, 0) };
+}
+
+// --- Recipientes personalizados (RF-3.1: copo, garrafa personalizada) ---
+
+export const RECIPIENTES_PADRAO: Recipiente[] = [
+  { id: "padrao-copo", nome: "Copo", ml: 250, tipo: "copo" },
+  { id: "padrao-garrafa", nome: "Garrafa", ml: 500, tipo: "garrafa" },
+];
+
+export function getRecipientes(): Recipiente[] {
+  return ler<Recipiente[]>(CHAVES.recipientes) ?? RECIPIENTES_PADRAO;
+}
+
+export function adicionarRecipiente(dados: Omit<Recipiente, "id">): Recipiente {
+  const novo = { ...dados, id: gerarId() };
+  escrever(CHAVES.recipientes, [...getRecipientes(), novo]);
+  return novo;
+}
+
+export function removerRecipiente(id: string) {
+  escrever(CHAVES.recipientes, getRecipientes().filter((r) => r.id !== id));
+}
+
+// --- Celebração e resumo semanal (marcadores de UI) ---
+
+export function getCelebradoEm(): string | null {
+  return ler<string>(CHAVES.celebradoEm);
+}
+export function marcarCelebrado(dataLocal: string) {
+  escrever(CHAVES.celebradoEm, dataLocal);
+}
+export function getResumoVisto(): string | null {
+  return ler<string>(CHAVES.resumoVisto);
+}
+export function marcarResumoVisto(segunda: string) {
+  escrever(CHAVES.resumoVisto, segunda);
 }
 
 // --- Diário alimentar ---
@@ -389,6 +507,9 @@ export interface ExportacaoDados {
   refeicoesPlanejadas: RefeicaoPlanejada[];
   conclusoes: ConclusaoRefeicao[];
   configLembretes: ConfigLembretes;
+  historicoMetas: MetaAgua[];
+  climaDoDia: Record<string, Clima>;
+  recipientes: Recipiente[];
 }
 
 /** Reúne todos os dados do usuário num objeto legível (para download em JSON). */
@@ -404,6 +525,9 @@ export function exportarDados(): ExportacaoDados {
     refeicoesPlanejadas: ler<RefeicaoPlanejada[]>(CHAVES.refeicoesPlanejadas) ?? [],
     conclusoes: getTodasConclusoes(),
     configLembretes: getConfigLembretes(),
+    historicoMetas: getHistoricoMetas(),
+    climaDoDia: ler<Record<string, Clima>>(CHAVES.climaDoDia) ?? {},
+    recipientes: getRecipientes(),
   };
 }
 

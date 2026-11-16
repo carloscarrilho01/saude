@@ -15,5 +15,43 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Beber 1 copo (250 ml)",
+      "short_name": "+1 copo",
+      "url": "/registrar?ml=250",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Beber 1 garrafa (500 ml)",
+      "short_name": "+500 ml",
+      "url": "/registrar?ml=500",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Ver minha hidratação",
+      "short_name": "Água",
+      "url": "/agua",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
   ]
 }

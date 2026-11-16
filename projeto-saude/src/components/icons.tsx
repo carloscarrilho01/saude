@@ -142,3 +142,39 @@ export function IconeRefeicao({ tipo, ...p }: { tipo: TipoRefeicao } & P) {
       return <IconeGarfo {...p} />;
   }
 }
+
+export const IconeTrofeu = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M8 21h8M12 17v4" />
+    <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+    <path d="M17 6h2.5a1.5 1.5 0 0 1 1.5 1.5c0 2-1.8 3.5-4 3.5M7 6H4.5A1.5 1.5 0 0 0 3 7.5C3 9.5 4.8 11 7 11" />
+  </svg>
+);
+
+export const IconeGarrafa = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M10 2h4v3l1.5 2.5V20a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V7.5L10 5V2Z" />
+    <path d="M8.5 12h7" />
+  </svg>
+);
+
+export const IconeCaneca = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4 7h12v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z" />
+    <path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16" />
+  </svg>
+);
+
+export const IconeCopo = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M5 4h14l-1.6 15.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8L5 4Z" />
+    <path d="M6 10h12" />
+  </svg>
+);
+
+export const IconeSol = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+  </svg>
+);

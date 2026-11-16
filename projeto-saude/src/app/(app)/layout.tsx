@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import AgendadorLembretes from "@/components/AgendadorLembretes";
+import CelebracaoMeta from "@/components/CelebracaoMeta";
 import { useStorePronto } from "@/lib/hooks";
 import { temPerfil } from "@/lib/storage";
 
@@ -27,6 +28,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AgendadorLembretes />
+      <CelebracaoMeta />
       <AppShell>{children}</AppShell>
     </>
   );

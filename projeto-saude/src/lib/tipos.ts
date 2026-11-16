@@ -124,3 +124,22 @@ export interface ConfigLembretes {
   /** ISO até quando os lembretes estão adiados (snooze). */
   adiadoAte?: string;
 }
+
+// --- Hábitos (sequência, recipientes, ajuste do dia) ---
+
+export type TipoRecipiente = "copo" | "garrafa" | "caneca";
+
+/** Copo/garrafa personalizado do usuário para registro em 1 toque (RF-3.1). */
+export interface Recipiente {
+  id: string;
+  nome: string;
+  ml: number;
+  tipo: TipoRecipiente;
+}
+
+/** Consumo de um dia com a meta que valia naquele dia. */
+export interface DiaConsumo {
+  data: string; // "YYYY-MM-DD"
+  totalMl: number;
+  metaMl: number;
+}

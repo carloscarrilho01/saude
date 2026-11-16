@@ -7,7 +7,7 @@ import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import {
   getPerfil,
-  getMeta,
+  metaDoDia,
   consumoUltimosDias,
   getRegimeAtivo,
   getRefeicoesPlanejadas,
@@ -16,6 +16,7 @@ import {
 } from "@/lib/storage";
 import { formatarLitros } from "@/lib/hidratacao";
 import { aderenciaDoDia, aderenciaPeriodo } from "@/lib/aderencia";
+import { bateuMeta } from "@/lib/habitos";
 
 type Aba = "agua" | "alimentacao" | "geral";
 
@@ -27,7 +28,7 @@ export default function PaginaRelatorios() {
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
   const fuso = getPerfil()?.fuso;
-  const metaMl = getMeta()?.metaMl ?? 2000;
+  const metaMl = metaDoDia();
 
   // água — últimos 14 dias (para comparar semana atual vs anterior)
   const dias14 = consumoUltimosDias(14, fuso);
@@ -36,7 +37,7 @@ export default function PaginaRelatorios() {
   const mediaAtual = media(semanaAtual.map((d) => d.totalMl));
   const mediaAnterior = media(semanaAnterior.map((d) => d.totalMl));
   const variacao = mediaAnterior > 0 ? Math.round(((mediaAtual - mediaAnterior) / mediaAnterior) * 100) : 0;
-  const diasBatidos = semanaAtual.filter((d) => d.totalMl >= metaMl).length;
+  const diasBatidos = semanaAtual.filter(bateuMeta).length;
 
   // alimentação
   const regime = getRegimeAtivo();

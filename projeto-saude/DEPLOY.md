@@ -29,7 +29,8 @@ Nunca colocar a `service_role` em variável `NEXT_PUBLIC_*`.
 ## Rotas
 - `/` — landing pública (página de vendas, renderizada estática)
 - `/onboarding` — cálculo da meta e criação do perfil
-- `/inicio`, `/agua`, `/diario`, `/planos`, `/perfil`… — o app (PWA, `start_url` = `/inicio`)
+- `/inicio`, `/agua`, `/diario`, `/planos`, `/perfil`, `/conquistas`… — o app (PWA, `start_url` = `/inicio`)
+- `/registrar?ml=250` — destino dos atalhos do ícone (manifest `shortcuts`): registra e abre `/agua`
 
 ## Checklist antes de promover para produção
 - [ ] `npm run lint` e `npm run build` sem erros
