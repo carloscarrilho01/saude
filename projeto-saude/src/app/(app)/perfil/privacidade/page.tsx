@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconeSetaEsq } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import { exportarDados, limparTudo } from "@/lib/storage";
+import { apagarTodasAsFotos, assinarFotos, blobParaDataUrl, todasAsFotos } from "@/lib/fotos";
 
 // Privacidade e dados (PRD §4.1): exportar e excluir tudo.
 // Na fase localStorage os dados vivem só neste navegador; com o Supabase,
@@ -20,17 +21,41 @@ export default function PaginaPrivacidade() {
   const [confirmando, setConfirmando] = useState(false);
   const [texto, setTexto] = useState("");
   const [aviso, setAviso] = useState<string | null>(null);
+  const [qtdFotos, setQtdFotos] = useState<number | null>(null);
+  useEffect(() => {
+    let vivo = true;
+    const contar = () => todasAsFotos().then((f) => vivo && setQtdFotos(f.length)).catch(() => vivo && setQtdFotos(0));
+    contar();
+    const sair = assinarFotos(contar);
+    return () => {
+      vivo = false;
+      sair();
+    };
+  }, []);
 
   const dados = exportarDados();
   const contagem = [
     { rotulo: "Registros de água", n: dados.registrosAgua.length },
     { rotulo: "Itens do diário", n: dados.itensDiario.length },
     { rotulo: "Planos alimentares", n: dados.regimes.length },
+    { rotulo: "Fotos de progresso", n: qtdFotos ?? "…" },
   ];
 
-  function baixar() {
+  async function baixar() {
     try {
-      const blob = new Blob([JSON.stringify(exportarDados(), null, 2)], { type: "application/json" });
+      // fotos entram como data URL para a cópia ser completa (PRD §4.1)
+      const fotos = await Promise.all(
+        (await todasAsFotos()).map(async (f) => ({
+          id: f.id,
+          regimeId: f.regimeId,
+          dataLocal: f.dataLocal,
+          criadaEm: f.criadaEm,
+          largura: f.largura,
+          altura: f.altura,
+          imagem: await blobParaDataUrl(f.imagem),
+        })),
+      );
+      const blob = new Blob([JSON.stringify({ ...exportarDados(), fotosProgresso: fotos }, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -43,8 +68,9 @@ export default function PaginaPrivacidade() {
     }
   }
 
-  function excluir() {
+  async function excluir() {
     if (texto.trim().toUpperCase() !== PALAVRA_CONFIRMACAO) return;
+    await apagarTodasAsFotos();
     limparTudo();
     router.replace("/onboarding");
   }
@@ -65,7 +91,7 @@ export default function PaginaPrivacidade() {
           Nesta versão, tudo fica salvo apenas neste navegador. Nada é enviado para servidores, e
           ninguém além de você tem acesso.
         </p>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+        <div className="mt-4 grid grid-cols-2 gap-2 text-center">
           {contagem.map((c) => (
             <div key={c.rotulo} className="rounded-2xl bg-superficie px-2 py-3">
               <p className="text-xl font-extrabold tabular-nums text-brand">{c.n}</p>
@@ -78,7 +104,7 @@ export default function PaginaPrivacidade() {
       <h2 className="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">Exportar</h2>
       <div className="rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
         <p className="text-sm text-tinta-2">
-          Baixe uma cópia completa (perfil, meta, água, diário, planos e lembretes) em JSON.
+          Baixe uma cópia completa (perfil, meta, água, diário, planos, lembretes e fotos) em JSON.
         </p>
         <button type="button" onClick={baixar}
           className="mt-4 w-full rounded-2xl bg-brand py-3.5 text-sm font-semibold text-white active:scale-[.99]">

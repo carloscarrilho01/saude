@@ -18,6 +18,7 @@ import type {
 } from "./tipos";
 import { CONFIG_LEMBRETES_PADRAO } from "./lembretes";
 import { metaComClimaDoDia } from "./hidratacao";
+import { apagarTodasAsFotos, removerFotosDoRegime } from "./fotos";
 
 const CHAVES = {
   perfil: "saude.perfil",
@@ -33,6 +34,8 @@ const CHAVES = {
   recipientes: "saude.recipientes",
   celebradoEm: "saude.celebradoEm", // data local da última celebração de meta
   resumoVisto: "saude.resumoVisto", // segunda-feira da semana cujo resumo foi fechado
+  consentimentoFotos: "saude.consentimentoFotos", // ISO do aceite (fotos ficam só no aparelho)
+  planoPendente: "saude.planoPendente", // plano recebido por link antes de existir perfil
 } as const;
 
 const disponivel = () => typeof window !== "undefined";
@@ -396,6 +399,7 @@ export function encerrarRegime(id: string) {
 }
 
 export function removerRegime(id: string) {
+  void removerFotosDoRegime(id);
   escrever(
     CHAVES.regimes,
     getRegimes().filter((r) => r.id !== id),
@@ -594,6 +598,7 @@ export function exportarDados(): ExportacaoDados {
 /** Apaga tudo (usado em "sair"/reset de testes). */
 export function limparTudo() {
   if (!disponivel()) return;
+  void apagarTodasAsFotos();
   Object.values(CHAVES).forEach((c) => window.localStorage.removeItem(c));
   notificar();
 }
@@ -616,4 +621,27 @@ export function criarRegimeDeModelo(
   );
   if (ativar) ativarRegime(regime.id);
   return regime;
+}
+
+// --- Consentimento para fotos de progresso (LGPD) ---
+
+export function getConsentimentoFotos(): string | null {
+  return ler<string>(CHAVES.consentimentoFotos);
+}
+export function registrarConsentimentoFotos() {
+  escrever(CHAVES.consentimentoFotos, new Date().toISOString());
+}
+
+// --- Plano recebido por link antes do onboarding ---
+
+export function getPlanoPendente(): string | null {
+  return ler<string>(CHAVES.planoPendente);
+}
+export function definirPlanoPendente(codigo: string | null) {
+  if (!disponivel()) return;
+  if (codigo) escrever(CHAVES.planoPendente, codigo);
+  else {
+    window.localStorage.removeItem(CHAVES.planoPendente);
+    notificar();
+  }
 }

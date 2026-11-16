@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogoSaude, FundoFolhas } from "@/components/decor";
 import { calcularMeta, formatarLitros, emCopos } from "@/lib/hidratacao";
-import { salvarPerfil, salvarMeta, fusoDoNavegador } from "@/lib/storage";
+import { salvarPerfil, salvarMeta, fusoDoNavegador, getPlanoPendente } from "@/lib/storage";
 import type { NivelAtividade, Sexo, Clima } from "@/lib/tipos";
 import { ATIVIDADES, CLIMAS } from "@/lib/perfilOpcoes";
 
@@ -54,7 +54,8 @@ export default function Onboarding() {
       ajusteClimaMl: resultado.ajusteClimaMl,
       validoDesde: agora,
     });
-    router.push("/inicio");
+    // chegou por um link de plano compartilhado? volta para ele
+    router.push(getPlanoPendente() ? "/importar" : "/inicio");
   }
 
   return (

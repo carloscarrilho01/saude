@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { IconeSetaEsq, IconeCheck, IconeLapis, IconeRefeicao } from "@/components/icons";
 import EditorPlano from "@/components/EditorPlano";
+import FotosProgresso from "@/components/FotosProgresso";
+import BotaoCompartilharPlano from "@/components/BotaoCompartilharPlano";
 import { useStorePronto } from "@/lib/hooks";
 import {
   getRegime,
@@ -135,6 +137,10 @@ export default function DetalhePlano() {
           })}
         </ul>
       )}
+
+      <FotosProgresso regime={regime} />
+
+      {refeicoes.length > 0 && <BotaoCompartilharPlano regime={regime} refeicoes={refeicoes} />}
 
       {/* ações */}
       <div className="mt-6 space-y-2">

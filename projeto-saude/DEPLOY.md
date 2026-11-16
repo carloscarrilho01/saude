@@ -31,6 +31,7 @@ Nunca colocar a `service_role` em variável `NEXT_PUBLIC_*`.
 - `/onboarding` — cálculo da meta e criação do perfil
 - `/inicio`, `/agua`, `/diario`, `/planos`, `/perfil`, `/conquistas`… — o app (PWA, `start_url` = `/inicio`)
 - `/registrar?ml=250` — destino dos atalhos do ícone (manifest `shortcuts`): registra e abre `/agua`
+- `/importar#p=…` — destino do link "Compartilhar plano" (fora do grupo `(app)`, abre sem conta)
 
 ## Checklist antes de promover para produção
 - [ ] `npm run lint` e `npm run build` sem erros

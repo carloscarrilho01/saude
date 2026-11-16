@@ -31,7 +31,7 @@ Um web app onde o usuário cria sua conta, informa seus dados (peso, altura, ida
 - Contagem avançada de calorias por foto/IA de imagem.
 - Integração com wearables (Apple Watch, Fitbit, etc.).
 - Receitas e lista de compras.
-- Rede social / comparação entre usuários.
+- Rede social / comparação entre usuários. (Compartilhar um plano por link — RF-5.9 — é permitido; feed, perfis públicos e interações entre usuários continuam fora da v1 e dependem de backend, moderação e revisão de privacidade.)
 - Prescrição médica ou diagnóstico (ver seção 11 — Disclaimer).
 
 ---
@@ -208,6 +208,8 @@ O app deve detectar suporte e permissão em tempo de execução e exibir o estad
 - RF-5.4: Acompanhar aderência: quanto do planejado foi cumprido no dia e na semana.
 - RF-5.5: Editar, pausar ou encerrar um regime.
 - RF-5.6: Histórico de regimes anteriores.
+- RF-5.8: Fotos de progresso por regime (opcional para o usuário): comparação "início × agora". **Na v1 as fotos ficam só no aparelho** (IndexedDB), com consentimento explícito antes da primeira foto, remoção de metadados (EXIF/GPS) e inclusão em exportar/excluir dados (§4.1). Envio à nuvem exige novo consentimento e revisão de privacidade.
+- RF-5.9: Compartilhar um regime por link: leva só a estrutura (nome, objetivo, duração, refeições) — nunca fotos, progresso ou perfil. Quem recebe vê o plano e pode adicioná-lo aos próprios planos. Não é rede social (ver §1.4).
 - RF-5.7: Modelos prontos de regime para o usuário clonar (aba "Explorar"). **Antecipado para a v1 por decisão de produto (nov/2026).** Os modelos são rotinas de organização (horários + tipos de refeição, sem calorias ou porções), baseados no Guia Alimentar para a População Brasileira, e devem passar pela mesma revisão profissional da §10.1 antes do lançamento.
 
 **Regras de ativação e encerramento:**

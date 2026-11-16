@@ -212,3 +212,24 @@ export const IconeAlvo = (p: P) => (
     <circle cx="12" cy="12" r="0.8" fill="currentColor" />
   </svg>
 );
+
+export const IconeCamera = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.4-2h5l1.4 2h1.6A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-8Z" />
+    <circle cx="12" cy="12.5" r="3.5" />
+  </svg>
+);
+
+export const IconeCompartilhar = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 3v12M7.5 7.5 12 3l4.5 4.5" />
+    <path d="M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12" />
+  </svg>
+);
+
+export const IconeLink = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
+    <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+  </svg>
+);
