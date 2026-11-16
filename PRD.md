@@ -288,7 +288,15 @@ Aderência semanal (%) = (soma das refeições concluídas nos 7 dias ÷ soma da
 - **Limitação de plataforma:** como PWA, a localização só chega com o app aberto na tela (Wake Lock mantém a tela acesa). Rastreio com tela bloqueada exige o app nativo (Capacitor + geolocalização em segundo plano).
 - Sem estimativa de calorias (exigiria parâmetros clínicos não validados).
 
+### 3.6.2 Treinos (adicionado por decisão de produto, nov/2026)
+- RF-6.20: Meta semanal de atividade em minutos ou nº de treinos. Padrão: **150 min/semana**, recomendação da OMS (2020) para adultos (150–300 min de atividade moderada); configurável.
+- RF-6.21: Registro manual de treino (tipo, duração, intensidade pela "regra da conversa", hoje/ontem, observação). Caminhadas com GPS contam na meta.
+- RF-6.22: Treinos em casa sem equipamento, recomendados pelo foco (começar do zero / perder peso / manter ativo), com versão mais fácil de cada exercício, aviso de segurança e modo guiado (cronômetro, descanso, registro ao concluir).
+- RF-6.23: Conquistas de caminhada (1ª caminhada; 1/3/5/10 km de uma vez; 10/42/100/250 km no total) e de treinos (1/10/30/100; semanas na meta), com aviso ao desbloquear.
+- RF-6.24: Demonstração de cada exercício: animação do boneco (todos os 23 exercícios) no detalhe do treino e no modo guiado; cada exercício aceita um vídeo real (`video`) que substitui a animação. Respeita "reduzir movimento".
+- **Conteúdo:** orientação geral, não prescrição. Exercícios, textos e futuros vídeos devem ser gravados com/revisados por profissional de educação física antes do lançamento (mesma regra da §10.1). Sem estimativa de calorias.
 
+### 3.7 Dashboard / Painel
 **Descrição:** Tela inicial que resume o dia do usuário.
 
 **Elementos:**
