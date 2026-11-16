@@ -5,7 +5,7 @@ import ModalAdicionarItem from "@/components/ModalAdicionarItem";
 import { IconeMais, IconeLapis, IconeLixeira, IconeSetaEsq, IconeSetaDir } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
-import { getItensDia, removerItemDiario, dataLocalHoje, getPerfil } from "@/lib/storage";
+import { getItensDia, removerItemDiario, getPerfil } from "@/lib/storage";
 import { TIPOS_REFEICAO, nomeRefeicao, abreviarUnidade } from "@/lib/refeicoes";
 import type { ItemDiario, TipoRefeicao } from "@/lib/tipos";
 

@@ -31,11 +31,25 @@ const disponivel = () => typeof window !== "undefined";
 // Pub/sub simples para a UI reagir a mudanças sem um state manager externo.
 type Listener = () => void;
 const listeners = new Set<Listener>();
+let versao = 0;
 export function assinar(fn: Listener): () => void {
   listeners.add(fn);
-  return () => listeners.delete(fn);
+  // mudanças feitas em outra aba também atualizam esta
+  const aoMudarOutraAba = (e: StorageEvent) => {
+    if (e.key?.startsWith("saude.")) notificar();
+  };
+  if (disponivel()) window.addEventListener("storage", aoMudarOutraAba);
+  return () => {
+    listeners.delete(fn);
+    if (disponivel()) window.removeEventListener("storage", aoMudarOutraAba);
+  };
+}
+/** Contador que muda a cada escrita — usado por useSyncExternalStore. */
+export function getVersao(): number {
+  return versao;
 }
 function notificar() {
+  versao++;
   listeners.forEach((fn) => fn());
 }
 
@@ -360,6 +374,37 @@ export function marcarLembreteDisparado(quando: string = new Date().toISOString(
 export function adiarLembretes(minutos: number) {
   const ate = new Date(Date.now() + minutos * 60000).toISOString();
   atualizarConfigLembretes({ adiadoAte: ate });
+}
+
+// --- Privacidade (LGPD §4.1): exportar e excluir ---
+
+export interface ExportacaoDados {
+  formato: "projeto-saude.v1";
+  exportadoEm: string;
+  perfil: Perfil | null;
+  meta: MetaAgua | null;
+  registrosAgua: RegistroAgua[];
+  itensDiario: ItemDiario[];
+  regimes: Regime[];
+  refeicoesPlanejadas: RefeicaoPlanejada[];
+  conclusoes: ConclusaoRefeicao[];
+  configLembretes: ConfigLembretes;
+}
+
+/** Reúne todos os dados do usuário num objeto legível (para download em JSON). */
+export function exportarDados(): ExportacaoDados {
+  return {
+    formato: "projeto-saude.v1",
+    exportadoEm: new Date().toISOString(),
+    perfil: getPerfil(),
+    meta: getMeta(),
+    registrosAgua: getTodosRegistros(),
+    itensDiario: getTodosItensDiario(),
+    regimes: getRegimes(),
+    refeicoesPlanejadas: ler<RefeicaoPlanejada[]>(CHAVES.refeicoesPlanejadas) ?? [],
+    conclusoes: getTodasConclusoes(),
+    configLembretes: getConfigLembretes(),
+  };
 }
 
 /** Apaga tudo (usado em "sair"/reset de testes). */

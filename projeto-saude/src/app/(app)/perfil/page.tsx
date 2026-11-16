@@ -7,6 +7,7 @@ import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import { getPerfil, getMeta, limparTudo } from "@/lib/storage";
 import { formatarLitros } from "@/lib/hidratacao";
+import { nomeAtividade, nomeClima } from "@/lib/perfilOpcoes";
 
 export default function PaginaPerfil() {
   const pronto = useStorePronto();
@@ -35,30 +36,24 @@ export default function PaginaPerfil() {
         {meta && <p className="text-sm text-tinta-2">Meta: {formatarLitros(meta.metaMl)} / dia</p>}
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-[var(--radius-card)] bg-card shadow-[var(--shadow-card)]">
+      <div className="mt-6 mb-2 flex items-baseline justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wide text-tinta-2">Meus dados</p>
+        <Link href="/perfil/dados" className="text-sm font-semibold text-brand">Editar</Link>
+      </div>
+      <div className="overflow-hidden rounded-[var(--radius-card)] bg-card shadow-[var(--shadow-card)]">
         <LinhaDado rotulo="Peso" valor={perfil?.pesoKg ? `${perfil.pesoKg} kg` : "—"} />
         <LinhaDado rotulo="Altura" valor={perfil?.alturaCm ? `${perfil.alturaCm} cm` : "—"} />
         <LinhaDado rotulo="Idade" valor={perfil?.idade ? `${perfil.idade} anos` : "—"} />
-        <LinhaDado rotulo="Nível de atividade" valor={capitalizar(perfil?.nivelAtividade)} />
-        <LinhaDado rotulo="Clima" valor={rotuloClima(perfil?.clima)} ultima />
+        <LinhaDado rotulo="Nível de atividade" valor={nomeAtividade(perfil?.nivelAtividade)} />
+        <LinhaDado rotulo="Clima" valor={nomeClima(perfil?.clima)} ultima />
       </div>
 
       <p className="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">Configurações</p>
       <div className="overflow-hidden rounded-[var(--radius-card)] bg-card shadow-[var(--shadow-card)]">
-        <Link href="/relatorios" className="flex items-center justify-between border-b border-black/5 px-4 py-3.5 hover:bg-black/[0.02]">
-          <span className="text-sm text-tinta">Relatórios</span>
-          <span className="text-sm font-medium text-tinta-2">›</span>
-        </Link>
-        <Link href="/lembretes" className="flex items-center justify-between px-4 py-3.5 hover:bg-black/[0.02]">
-          <span className="text-sm text-tinta">Lembretes</span>
-          <span className="text-sm font-medium text-tinta-2">›</span>
-        </Link>
-      </div>
-
-      <p className="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">Em breve</p>
-      <div className="overflow-hidden rounded-[var(--radius-card)] bg-card shadow-[var(--shadow-card)]">
-        <LinhaDado rotulo="Metas e preferências" valor="" />
-        <LinhaDado rotulo="Segurança" valor="" ultima />
+        <LinhaLink href="/perfil/dados" rotulo="Metas e preferências" />
+        <LinhaLink href="/lembretes" rotulo="Lembretes" />
+        <LinhaLink href="/relatorios" rotulo="Relatórios" />
+        <LinhaLink href="/perfil/privacidade" rotulo="Privacidade e dados" ultima />
       </div>
 
       <button
@@ -82,16 +77,21 @@ function LinhaDado({ rotulo, valor, ultima }: { rotulo: string; valor: string; u
       }`}
     >
       <span className="text-sm text-tinta">{rotulo}</span>
-      <span className="text-sm font-medium text-tinta-2">{valor || "›"}</span>
+      <span className="text-sm font-medium text-tinta-2">{valor}</span>
     </div>
   );
 }
 
-function capitalizar(s?: string) {
-  return s ? s.charAt(0).toUpperCase() + s.slice(1) : "—";
-}
-function rotuloClima(c?: string) {
-  if (c === "quente") return "Quente";
-  if (c === "muito_quente") return "Muito quente";
-  return "Ameno";
+function LinhaLink({ href, rotulo, ultima }: { href: string; rotulo: string; ultima?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`flex items-center justify-between px-4 py-3.5 hover:bg-black/[0.02] ${
+        ultima ? "" : "border-b border-black/5"
+      }`}
+    >
+      <span className="text-sm text-tinta">{rotulo}</span>
+      <span className="text-sm font-medium text-tinta-2" aria-hidden>›</span>
+    </Link>
+  );
 }

@@ -6,21 +6,9 @@ import { LogoSaude, FundoFolhas } from "@/components/decor";
 import { calcularMeta, formatarLitros, emCopos } from "@/lib/hidratacao";
 import { salvarPerfil, salvarMeta, fusoDoNavegador } from "@/lib/storage";
 import type { NivelAtividade, Sexo, Clima } from "@/lib/tipos";
+import { ATIVIDADES, CLIMAS } from "@/lib/perfilOpcoes";
 
 type Etapa = "boas-vindas" | "dados" | "resultado";
-
-const ATIVIDADES: { valor: NivelAtividade; nome: string; desc: string }[] = [
-  { valor: "sedentario", nome: "Sedentário", desc: "Pouco ou nenhum exercício" },
-  { valor: "leve", nome: "Leve", desc: "1–3× por semana" },
-  { valor: "moderado", nome: "Moderado", desc: "3–5× por semana" },
-  { valor: "intenso", nome: "Intenso", desc: "Treino diário / pesado" },
-];
-
-const CLIMAS: { valor: Clima; nome: string }[] = [
-  { valor: "ameno", nome: "Ameno" },
-  { valor: "quente", nome: "Quente" },
-  { valor: "muito_quente", nome: "Muito quente" },
-];
 
 export default function Onboarding() {
   const router = useRouter();

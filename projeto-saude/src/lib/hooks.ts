@@ -2,22 +2,25 @@
 
 // Hooks que ligam a UI à camada de dados (storage.ts) de forma reativa.
 
-import { useEffect, useState } from "react";
-import { assinar } from "./storage";
+import { useSyncExternalStore } from "react";
+import { assinar, getVersao } from "./storage";
+
+const nada = () => () => {};
+
+/** true no cliente, false no servidor/hidratação — sem setState em effect. */
+export function useNoCliente(): boolean {
+  return useSyncExternalStore(
+    nada,
+    () => true,
+    () => false,
+  );
+}
 
 /**
  * Re-renderiza o componente sempre que o storage muda e indica quando já
  * estamos no cliente (hidratado) — evita mismatch de SSR ao ler localStorage.
  */
 export function useStorePronto(): boolean {
-  const [, setVersao] = useState(0);
-  const [pronto, setPronto] = useState(false);
-
-  useEffect(() => {
-    setPronto(true);
-    const desassinar = assinar(() => setVersao((v) => v + 1));
-    return desassinar;
-  }, []);
-
-  return pronto;
+  useSyncExternalStore(assinar, getVersao, () => -1);
+  return useNoCliente();
 }
