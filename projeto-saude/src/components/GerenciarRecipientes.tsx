@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { SVGProps } from "react";
-import { IconeCaneca, IconeCopo, IconeGarrafa, IconeLixeira } from "./icons";
+import { IconeCaneca, IconeCopo, IconeGarrafa, IconeLixeira, IconeFechar } from "./icons";
 import { adicionarRecipiente, getRecipientes, removerRecipiente } from "@/lib/storage";
 import type { TipoRecipiente } from "@/lib/tipos";
 
@@ -42,19 +42,19 @@ export default function GerenciarRecipientes({ aberto, aoFechar }: { aberto: boo
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/40 sm:items-center sm:p-6" onClick={aoFechar}>
+    <div className="fundo-aparece fixed inset-0 z-40 flex items-end justify-center bg-black/40 sm:items-center sm:p-6" onClick={aoFechar}>
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="recipientes-titulo"
-        className="max-h-[90dvh] w-full max-w-[440px] overflow-y-auto rounded-t-[28px] bg-card p-6 shadow-[var(--shadow-float)] sm:rounded-[28px]"
+        className="folha-sobe max-h-[90dvh] w-full max-w-[440px] overflow-y-auto rounded-t-[28px] bg-card p-6 shadow-[var(--shadow-float)] sm:rounded-[28px]"
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 flex items-center justify-between">
           <h2 id="recipientes-titulo" className="text-lg font-bold text-tinta">Meus recipientes</h2>
           <button type="button" onClick={aoFechar} aria-label="Fechar" className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5 text-tinta-2">
-            ✕
+            <IconeFechar width={16} height={16} />
           </button>
         </div>
         <p className="mb-4 text-sm text-tinta-2">Cadastre o copo do trabalho ou a sua garrafa e registre com um toque.</p>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconeSetaEsq, IconeGota } from "@/components/icons";
+import { IconeSetaEsq, IconeGota, IconeCheck } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import { getConfigLembretes, atualizarConfigLembretes, getPerfil } from "@/lib/storage";
@@ -104,7 +104,7 @@ export default function PaginaLembretes() {
               }`}
             >
               {i.rotulo}
-              {config.intervaloMin === i.min && <span>✓</span>}
+              {config.intervaloMin === i.min && <IconeCheck width={16} height={16} aria-hidden />}
             </button>
           ))}
         </div>
@@ -170,13 +170,13 @@ export default function PaginaLembretes() {
             <IconeGota width={20} height={20} />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-tinta">Hora de se hidratar! 💧</p>
+            <p className="text-sm font-semibold text-tinta">Hora de se hidratar</p>
             <p className="text-xs text-tinta-2">Beba cerca de 300 ml de água agora.</p>
           </div>
         </div>
         {config.ativo && permissao === "granted" && (
           <button
-            onClick={() => mostrarLembrete("Este é um lembrete de teste. 💧")}
+            onClick={() => mostrarLembrete("Este é um lembrete de teste.")}
             className="mt-3 w-full rounded-xl border border-brand/30 py-2.5 text-sm font-semibold text-brand"
           >
             Enviar notificação de teste

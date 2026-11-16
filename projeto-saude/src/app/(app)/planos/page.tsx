@@ -75,8 +75,8 @@ function ConteudoPlanos() {
         </div>
       ) : (
         <ul className="space-y-3">
-          {regimes.map((r) => (
-            <li key={r.id}>
+          {regimes.map((r, i) => (
+            <li key={r.id} className="surgir" style={{ "--i": i } as React.CSSProperties}>
               <CartaoRegime regime={r} fuso={getPerfil()?.fuso} />
             </li>
           ))}
@@ -101,7 +101,7 @@ function CartaoRegime({ regime, fuso }: { regime: Regime; fuso?: string }) {
   return (
     <Link
       href={`/planos/${regime.id}`}
-      className="block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]"
+      className="toque block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">

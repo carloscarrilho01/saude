@@ -2,21 +2,18 @@
 
 import type { TipoRefeicao, Unidade, ObjetivoRegime } from "./tipos";
 
-export const TIPOS_REFEICAO: { valor: TipoRefeicao; nome: string; emoji: string }[] = [
-  { valor: "cafe", nome: "Café da manhã", emoji: "☕" },
-  { valor: "almoco", nome: "Almoço", emoji: "🍽️" },
-  { valor: "lanche", nome: "Lanche", emoji: "🍎" },
-  { valor: "jantar", nome: "Jantar", emoji: "🥗" },
-  { valor: "outro", nome: "Outro", emoji: "🍴" },
+export const TIPOS_REFEICAO: { valor: TipoRefeicao; nome: string }[] = [
+  { valor: "cafe", nome: "Café da manhã" },
+  { valor: "almoco", nome: "Almoço" },
+  { valor: "lanche", nome: "Lanche" },
+  { valor: "jantar", nome: "Jantar" },
+  { valor: "outro", nome: "Outro" },
 ];
 
 export function nomeRefeicao(tipo: TipoRefeicao): string {
   return TIPOS_REFEICAO.find((t) => t.valor === tipo)?.nome ?? "Outro";
 }
 
-export function emojiRefeicao(tipo: TipoRefeicao): string {
-  return TIPOS_REFEICAO.find((t) => t.valor === tipo)?.emoji ?? "🍴";
-}
 
 export const UNIDADES: { valor: Unidade; nome: string }[] = [
   { valor: "g", nome: "Gramas (g)" },

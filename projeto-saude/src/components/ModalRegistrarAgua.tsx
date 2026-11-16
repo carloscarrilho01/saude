@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { adicionarRegistroAgua } from "@/lib/storage";
-import { IconeMais, IconeMenos } from "./icons";
+import { IconeMais, IconeMenos, IconeFechar } from "./icons";
 import { CopoDagua } from "./decor";
 
 const ATALHOS = [200, 300, 500, 1000];
@@ -25,11 +25,11 @@ export default function ModalRegistrarAgua({
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-6"
+      className="fundo-aparece fixed inset-0 z-40 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-6"
       onClick={aoFechar}
     >
       <div
-        className="w-full max-w-[440px] rounded-t-[28px] bg-card p-6 pb-8 shadow-[var(--shadow-float)] sm:rounded-[28px]"
+        className="folha-sobe w-full max-w-[440px] rounded-t-[28px] bg-card p-6 pb-8 shadow-[var(--shadow-float)] sm:rounded-[28px]"
         style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -40,7 +40,7 @@ export default function ModalRegistrarAgua({
             aria-label="Fechar"
             className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5 text-tinta-2"
           >
-            ✕
+            <IconeFechar width={16} height={16} />
           </button>
         </div>
 

@@ -42,16 +42,13 @@ export default function TabBar() {
               <Link
                 href={href}
                 aria-current={ativo ? "page" : undefined}
-                className={`flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium transition-colors ${
+                className={`group flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium transition-colors ${
                   ativo ? "text-brand" : "text-tinta-2"
                 }`}
               >
-                <span
-                  className={`flex h-9 w-12 items-center justify-center rounded-full transition-colors ${
-                    ativo ? "bg-verde-claro/40" : ""
-                  }`}
-                >
-                  <Icone width={22} height={22} strokeWidth={ativo ? 2.1 : 1.8} />
+                <span className="relative flex h-9 w-12 items-center justify-center">
+                  {ativo && <span aria-hidden className="aba-ativa absolute inset-0 rounded-full bg-verde-claro/40" />}
+                  <Icone width={22} height={22} strokeWidth={ativo ? 2.1 : 1.8} className="relative transition-transform duration-200 group-active:scale-90" />
                 </span>
                 {rotulo}
               </Link>

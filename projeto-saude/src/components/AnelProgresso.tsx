@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 interface Props {
   /** 0–100 */
@@ -48,7 +48,14 @@ export default function AnelProgresso({
           strokeLinecap="round"
           strokeDasharray={circunferencia}
           strokeDashoffset={circunferencia - preenchido}
-          style={{ transition: "stroke-dashoffset 600ms cubic-bezier(.4,0,.2,1)" }}
+          className="anel-encher"
+          style={
+            {
+              "--anel-de": circunferencia,
+              "--anel-para": circunferencia - preenchido,
+              transition: "stroke-dashoffset 600ms cubic-bezier(.4,0,.2,1)",
+            } as CSSProperties
+          }
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">

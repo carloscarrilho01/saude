@@ -14,6 +14,7 @@ import {
 } from "@/lib/storage";
 import { calcularSequencia, proximoMarco } from "@/lib/habitos";
 import { formatarLitros } from "@/lib/hidratacao";
+import { IconeFogo } from "./icons";
 
 // Celebração ao bater a meta do dia (PRD §12.6): água sobe na tela + vibração.
 // Aparece uma vez por dia; o estado vem do storage (sem setState em effect).
@@ -76,8 +77,8 @@ export default function CelebracaoMeta() {
           {formatarLitros(total)} de {formatarLitros(metaMl)}
         </p>
         {seq.atual > 0 && (
-          <p className="mx-auto mt-5 inline-block rounded-full bg-white/10 px-4 py-2 text-sm font-semibold">
-            🔥 {seq.atual} {seq.atual === 1 ? "dia" : "dias"} seguidos
+          <p className="mx-auto mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold">
+            <IconeFogo width={16} height={16} className="text-menta" aria-hidden /> {seq.atual} {seq.atual === 1 ? "dia" : "dias"} seguidos
             {prox && <span className="font-normal text-white/70"> · {prox - seq.atual === 1 ? "falta 1" : `faltam ${prox - seq.atual}`} para {prox}</span>}
           </p>
         )}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IconeSetaEsq, IconeCheck, IconeLapis } from "@/components/icons";
+import { IconeSetaEsq, IconeCheck, IconeLapis, IconeRefeicao } from "@/components/icons";
 import EditorPlano from "@/components/EditorPlano";
 import { useStorePronto } from "@/lib/hooks";
 import {
@@ -19,7 +19,7 @@ import {
   getPerfil,
 } from "@/lib/storage";
 import { aderenciaDoDia, refeicaoConcluida } from "@/lib/aderencia";
-import { nomeObjetivo, nomeRefeicao, emojiRefeicao } from "@/lib/refeicoes";
+import { nomeObjetivo, nomeRefeicao } from "@/lib/refeicoes";
 
 export default function DetalhePlano() {
   const pronto = useStorePronto();
@@ -108,12 +108,12 @@ export default function DetalhePlano() {
         </div>
       ) : (
         <ul className="space-y-2">
-          {refeicoes.map((r) => {
+          {refeicoes.map((r, i) => {
             const concluida = refeicaoConcluida(r.id, hoje, conclusoes, itens);
             return (
-              <li key={r.id} className="flex items-center gap-3 rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-verde-claro/30 text-base">
-                  {emojiRefeicao(r.tipo)}
+              <li key={r.id} style={{ "--i": i } as React.CSSProperties} className="surgir flex items-center gap-3 rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-verde-claro/30 text-brand">
+                  <IconeRefeicao tipo={r.tipo} width={18} height={18} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-tinta">
@@ -125,7 +125,7 @@ export default function DetalhePlano() {
                   onClick={() => alternarConclusao(r.id, hoje)}
                   aria-label={concluida ? "Desmarcar" : "Marcar como concluída"}
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition ${
-                    concluida ? "border-brand bg-brand text-white" : "border-black/15 text-transparent"
+                    concluida ? "check-pop border-brand bg-brand text-white" : "border-black/15 text-transparent"
                   }`}
                 >
                   <IconeCheck width={16} height={16} />

@@ -178,3 +178,15 @@ export const IconeSol = (p: P) => (
     <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
   </svg>
 );
+
+export const IconeFechar = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M6 6l12 12M18 6 6 18" />
+  </svg>
+);
+
+export const IconeBrilho = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M6.3 17.7l2.1-2.1M15.6 8.4l2.1-2.1" />
+  </svg>
+);

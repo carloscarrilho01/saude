@@ -37,7 +37,7 @@ export default function PaginaConquistas() {
       </header>
 
       {/* sequência */}
-      <section className="rounded-[var(--radius-card)] bg-brand-deep p-6 text-white shadow-[var(--shadow-float)]">
+      <section className="surgir rounded-[var(--radius-card)] bg-brand-deep p-6 text-white shadow-[var(--shadow-float)]">
         <div className="flex items-center gap-2 text-verde-claro">
           <IconeFogo width={18} height={18} />
           <span className="text-xs font-semibold uppercase tracking-wide">Sequência atual</span>
@@ -85,10 +85,11 @@ export default function PaginaConquistas() {
         </span>
       </div>
       <ul className="grid grid-cols-2 gap-3">
-        {conquistas.map((c) => (
+        {conquistas.map((c, i) => (
           <li
             key={c.id}
-            className={`rounded-[var(--radius-card)] p-4 ${
+            style={{ "--i": i } as React.CSSProperties}
+            className={`surgir rounded-[var(--radius-card)] p-4 ${
               c.conquistada ? "bg-card shadow-[var(--shadow-card)]" : "border border-dashed border-black/10"
             }`}
           >
@@ -103,7 +104,7 @@ export default function PaginaConquistas() {
             <p className="mt-0.5 text-[11px] leading-snug text-tinta-2">{c.descricao}</p>
             {!c.conquistada && (
               <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-black/5" aria-label={`${Math.round(c.progresso * 100)}% concluído`}>
-                <div className="h-full rounded-full bg-verde-claro" style={{ width: `${c.progresso * 100}%` }} />
+                <div className="h-full origin-left rounded-full bg-verde-claro transition-[width] duration-700" style={{ width: `${c.progresso * 100}%` }} />
               </div>
             )}
           </li>

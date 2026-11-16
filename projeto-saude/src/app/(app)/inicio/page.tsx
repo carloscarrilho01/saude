@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import AnelProgresso from "@/components/AnelProgresso";
 import ModalRegistrarAgua from "@/components/ModalRegistrarAgua";
-import { IconeGota, IconeGarfo, IconeFogo, IconePessoa, IconeMais, IconeCheck, IconeRefeicao } from "@/components/icons";
+import { IconeGota, IconeGarfo, IconeFogo, IconePessoa, IconeMais, IconeCheck, IconeRefeicao, IconeSol, IconeSino } from "@/components/icons";
 import { FolhaCard } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import {
@@ -81,11 +81,12 @@ export default function Dashboard() {
 
       {/* Card de hidratação */}
       <section
-        className="relative overflow-hidden rounded-[var(--radius-card)] p-5 text-white shadow-[var(--shadow-card)]"
+        className="surgir relative overflow-hidden rounded-[var(--radius-card)] p-5 text-white shadow-[var(--shadow-card)]"
         style={{
+          "--i": 0,
           background:
             "radial-gradient(120% 120% at 100% 0%, #1e6b4a 0%, #143d2b 55%)",
-        }}
+        } as React.CSSProperties}
       >
         <FolhaCard />
         <div className="relative mb-4 flex items-center gap-2 text-white/80">
@@ -104,7 +105,9 @@ export default function Dashboard() {
               de {formatarLitros(metaMl)} {climaHoje ? "hoje" : "diários"}
             </p>
             {climaHoje && climaHoje !== "ameno" && (
-              <p className="mt-0.5 text-[11px] text-menta-soft">☀️ Ajustada para o calor de hoje</p>
+              <p className="mt-0.5 flex items-center gap-1 text-[11px] text-menta-soft">
+                <IconeSol width={12} height={12} aria-hidden /> Ajustada para o calor de hoje
+              </p>
             )}
             {ultimo ? (
               <span className="mt-3 inline-block rounded-full bg-white/10 px-3 py-1 text-xs text-white/90">
@@ -126,8 +129,8 @@ export default function Dashboard() {
         </button>
 
         {bateuMeta && (
-          <p className="relative mt-3 text-center text-xs font-medium text-menta-soft">
-            🎉 Meta do dia atingida! Mandou bem.
+          <p className="relative mt-3 flex items-center justify-center gap-1.5 text-xs font-medium text-menta-soft">
+            <IconeCheck width={14} height={14} aria-hidden /> Meta do dia atingida. Mandou bem.
           </p>
         )}
       </section>
@@ -136,15 +139,16 @@ export default function Dashboard() {
       {prox && (
         <Link
           href="/lembretes"
-          className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-card px-4 py-2.5 text-sm text-tinta-2 shadow-[var(--shadow-card)]"
+          style={{ "--i": 1 } as React.CSSProperties}
+          className="surgir toque mt-3 flex items-center justify-center gap-2 rounded-2xl bg-card px-4 py-2.5 text-sm text-tinta-2 shadow-[var(--shadow-card)]"
         >
-          🔔 Próximo lembrete {prox.amanha ? "amanhã" : "hoje"} às{" "}
+          <IconeSino width={16} height={16} className="text-brand" aria-hidden /> Próximo lembrete {prox.amanha ? "amanhã" : "hoje"} às{" "}
           <strong className="text-tinta">{prox.horario}</strong>
         </Link>
       )}
 
       {/* Cards de métrica */}
-      <section className="mt-4 grid grid-cols-2 gap-3">
+      <section className="surgir mt-4 grid grid-cols-2 gap-3" style={{ "--i": 2 } as React.CSSProperties}>
         <CartaoMetrica
           icone={<IconeGarfo width={22} height={22} />}
           titulo="Alimentação"
@@ -164,7 +168,7 @@ export default function Dashboard() {
       <ResumoSemanal dias={historico120.slice(-21)} />
 
       {/* Sua rotina */}
-      <section className="mt-4 rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
+      <section className="surgir mt-4 rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]" style={{ "--i": 4 } as React.CSSProperties}>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-bold text-tinta">Sua rotina</h2>
           <Link href="/diario" className="text-sm font-semibold text-brand">
@@ -186,7 +190,7 @@ export default function Dashboard() {
                     onClick={() => alternarConclusao(r.id, hoje)}
                     aria-label={concluida ? "Desmarcar" : "Marcar como concluída"}
                     className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition ${
-                      concluida ? "border-brand bg-brand text-white" : "border-black/15 text-transparent"
+                      concluida ? "check-pop border-brand bg-brand text-white" : "border-black/15 text-transparent"
                     }`}
                   >
                     <IconeCheck width={14} height={14} />
@@ -226,7 +230,7 @@ function CartaoMetrica({
   href?: string;
 }) {
   const conteudo = (
-    <div className="h-full rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]">
+    <div className="toque h-full rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]">
       <span className="text-brand">{icone}</span>
       <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">{titulo}</p>
       <p className="mt-0.5 text-2xl font-extrabold text-tinta">{destaque}</p>

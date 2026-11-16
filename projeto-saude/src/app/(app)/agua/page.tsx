@@ -68,6 +68,13 @@ export default function PaginaAgua() {
 function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
   const [modal, setModal] = useState(false);
   const [gerenciando, setGerenciando] = useState(false);
+  // feedback "+250 ml" que sobe do botão tocado (a key reinicia a animação)
+  const [pulso, setPulso] = useState<{ id: string; n: number } | null>(null);
+  const registrar = (id: string, ml: number) => {
+    adicionarRegistroAgua(ml, "botao_rapido");
+    setPulso((p) => ({ id, n: (p?.n ?? 0) + 1 }));
+    if ("vibrate" in navigator) navigator.vibrate?.(12);
+  };
   const recipientes = getRecipientes();
   const consumido = totalAguaDia();
   const pct = percentualMeta(consumido, metaMl);
@@ -108,10 +115,15 @@ function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
           <button
             key={r.id}
             type="button"
-            onClick={() => adicionarRegistroAgua(r.ml, "botao_rapido")}
+            onClick={() => registrar(r.id, r.ml)}
             aria-label={`Registrar ${r.nome}, ${r.ml} ml`}
-            className="flex flex-col items-center gap-1 rounded-2xl bg-card px-1 py-3 shadow-[var(--shadow-card)] active:scale-95"
+            className="toque relative flex flex-col items-center gap-1 rounded-2xl bg-card px-1 py-3 shadow-[var(--shadow-card)]"
           >
+            {pulso?.id === r.id && (
+              <span key={pulso.n} aria-hidden className="flutua-sobe pointer-events-none absolute left-1/2 top-0 z-10 whitespace-nowrap rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-white shadow-[var(--shadow-card)]">
+                +{r.ml} ml
+              </span>
+            )}
             <IconeRecipiente tipo={r.tipo} width={22} height={22} className="text-brand" />
             <span className="w-full truncate text-center text-[11px] font-medium text-tinta-2">{r.nome}</span>
             <span className="text-xs font-semibold text-tinta">{r.ml} ml</span>
@@ -120,7 +132,7 @@ function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
         <button
           type="button"
           onClick={() => setModal(true)}
-          className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-brand/25 py-3 active:scale-95"
+          className="toque flex flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-brand/25 py-3"
         >
           <IconeMais width={22} height={22} className="text-brand" />
           <span className="text-xs font-semibold text-tinta">Outro valor</span>
@@ -136,10 +148,11 @@ function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
         </div>
       ) : (
         <ul className="space-y-2">
-          {registros.map((r) => (
+          {registros.map((r, i) => (
             <li
               key={r.id}
-              className="flex items-center justify-between rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]"
+              style={{ "--i": Math.min(i, 6) } as React.CSSProperties}
+              className="surgir flex items-center justify-between rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]"
             >
               <span className="flex items-center gap-3">
                 <IconeGota width={20} height={20} className="text-brand" />

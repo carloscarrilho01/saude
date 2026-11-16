@@ -42,11 +42,11 @@ export default function VitrineModelos() {
       </div>
 
       <ul className="space-y-3">
-        {modelos.map((m) => (
-          <li key={m.slug}>
+        {modelos.map((m, i) => (
+          <li key={`${filtro}-${m.slug}`} className="surgir" style={{ "--i": i } as React.CSSProperties}>
             <Link
               href={`/planos/modelos/${m.slug}`}
-              className="block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)] transition active:scale-[.99]"
+              className="toque block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]"
             >
               <div className="flex items-start justify-between gap-3">
                 <p className="font-bold text-tinta">{m.nome}</p>

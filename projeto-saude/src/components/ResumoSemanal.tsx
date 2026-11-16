@@ -1,5 +1,7 @@
 "use client";
 
+import { IconeFechar } from "./icons";
+
 import Link from "next/link";
 import { getResumoVisto, marcarResumoVisto } from "@/lib/storage";
 import { inicioDaSemana, resumirSemana, somarDias } from "@/lib/habitos";
@@ -25,14 +27,14 @@ export default function ResumoSemanal({ dias }: { dias: DiaConsumo[] }) {
     new Intl.DateTimeFormat("pt-BR", { weekday: "long", timeZone: "UTC" }).format(new Date(`${data}T12:00:00Z`));
 
   return (
-    <section aria-labelledby="resumo-titulo" className="relative mt-4 rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
+    <section aria-labelledby="resumo-titulo" style={{ "--i": 3 } as React.CSSProperties} className="surgir relative mt-4 rounded-[var(--radius-card)] bg-card p-5 shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => marcarResumoVisto(segundaAtual)}
         aria-label="Fechar resumo da semana"
         className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-tinta-2 hover:bg-black/5"
       >
-        ✕
+        <IconeFechar width={16} height={16} />
       </button>
       <p className="text-xs font-semibold uppercase tracking-wide text-tinta-2">Sua semana passada</p>
       <h2 id="resumo-titulo" className="mt-1 pr-8 text-lg font-bold leading-snug text-tinta">

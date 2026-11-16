@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ModalAdicionarItem from "@/components/ModalAdicionarItem";
-import { IconeMais, IconeLapis, IconeLixeira, IconeSetaEsq, IconeSetaDir } from "@/components/icons";
+import { IconeMais, IconeLapis, IconeLixeira, IconeSetaEsq, IconeSetaDir, IconeRefeicao } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import { getItensDia, removerItemDiario, getPerfil } from "@/lib/storage";
@@ -70,7 +70,10 @@ export default function PaginaDiario() {
             return (
               <section key={t.valor}>
                 <h2 className="mb-2 flex items-center gap-2 text-sm font-bold text-tinta">
-                  <span>{t.emoji}</span> {nomeRefeicao(t.valor)}
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-verde-claro/35 text-brand">
+                    <IconeRefeicao tipo={t.valor} width={15} height={15} />
+                  </span>
+                  {nomeRefeicao(t.valor)}
                 </h2>
                 <ul className="space-y-2">
                   {lista.map((item) => (

@@ -121,18 +121,18 @@ export default function Landing() {
         {/* HERO */}
         <section className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 pb-20 pt-8 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:pt-16">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-verde-claro/35 px-3 py-1 text-xs font-semibold text-brand">
+            <p style={{ "--i": 0 } as React.CSSProperties} className="surgir inline-flex items-center gap-2 rounded-full bg-verde-claro/35 px-3 py-1 text-xs font-semibold text-brand">
               <span className="h-1.5 w-1.5 rounded-full bg-menta" />
               Hidratação, alimentação e hábitos
             </p>
-            <h1 className="mt-5 text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.035em] text-brand sm:text-6xl lg:text-[4.4rem]">
+            <h1 style={{ "--i": 1 } as React.CSSProperties} className="surgir mt-5 text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.035em] text-brand sm:text-6xl lg:text-[4.4rem]">
               Quanto de água o seu corpo pede&nbsp;hoje?
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-tinta-2">
+            <p style={{ "--i": 2 } as React.CSSProperties} className="surgir mt-5 max-w-xl text-lg leading-relaxed text-tinta-2">
               Descubra em segundos, pelo seu peso e idade. Depois, o Orvalho lembra você de beber no
               seu horário e reúne água, refeições e plano alimentar num só lugar.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div style={{ "--i": 3 } as React.CSSProperties} className="surgir mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/onboarding"
                 className="rounded-2xl bg-brand px-7 py-4 text-center text-base font-semibold text-white shadow-[0_14px_34px_-14px_rgba(19,38,30,0.7)] transition hover:bg-brand-deep"
@@ -146,7 +146,9 @@ export default function Landing() {
             <p className="mt-4 text-sm text-tinta-2">Funciona no navegador do celular ou do computador. Sem baixar nada.</p>
           </div>
 
-          <CalculadoraMeta />
+          <div className="surgir" style={{ "--i": 4 } as React.CSSProperties}>
+            <CalculadoraMeta />
+          </div>
         </section>
 
         {/* DORES */}

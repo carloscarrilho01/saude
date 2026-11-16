@@ -43,7 +43,7 @@ export async function mostrarLembrete(body?: string): Promise<boolean> {
   const texto = body || "Que tal beber um pouco de água agora?";
   try {
     const reg = await navigator.serviceWorker.ready;
-    await reg.showNotification("Hora de se hidratar! 💧", {
+    await reg.showNotification("Hora de se hidratar", {
       body: texto,
       icon: "/icon.svg",
       badge: "/icon.svg",
@@ -53,7 +53,7 @@ export async function mostrarLembrete(body?: string): Promise<boolean> {
     return true;
   } catch {
     try {
-      new Notification("Hora de se hidratar! 💧", { body: texto, icon: "/icon.svg" });
+      new Notification("Hora de se hidratar", { body: texto, icon: "/icon.svg" });
       return true;
     } catch {
       return false;

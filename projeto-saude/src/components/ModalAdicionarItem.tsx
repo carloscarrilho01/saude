@@ -1,5 +1,7 @@
 "use client";
 
+import { IconeFechar } from "./icons";
+
 import { useState } from "react";
 import {
   adicionarItemDiario,
@@ -66,9 +68,9 @@ export default function ModalAdicionarItem({
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/40 sm:items-center sm:p-6" onClick={aoFechar}>
+    <div className="fundo-aparece fixed inset-0 z-40 flex items-end justify-center bg-black/40 sm:items-center sm:p-6" onClick={aoFechar}>
       <div
-        className="scroll-limpo max-h-[90dvh] w-full max-w-[440px] overflow-y-auto rounded-t-[28px] bg-card p-6 shadow-[var(--shadow-float)] sm:rounded-[28px]"
+        className="folha-sobe scroll-limpo max-h-[90dvh] w-full max-w-[440px] overflow-y-auto rounded-t-[28px] bg-card p-6 shadow-[var(--shadow-float)] sm:rounded-[28px]"
         style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -77,7 +79,7 @@ export default function ModalAdicionarItem({
             {editando ? "Editar item" : "Adicionar refeição"}
           </h2>
           <button onClick={aoFechar} aria-label="Fechar" className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5 text-tinta-2">
-            ✕
+            <IconeFechar width={16} height={16} />
           </button>
         </div>
 
