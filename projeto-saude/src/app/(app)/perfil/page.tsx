@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { IconePessoa } from "@/components/icons";
+import type { ComponentType, SVGProps } from "react";
+import { IconePessoa, IconeSetaDir, IconeAlvo, IconeSino, IconeGrafico, IconeTrofeu, IconeCadeado } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import { getPerfil, getMeta, limparTudo } from "@/lib/storage";
@@ -50,10 +51,11 @@ export default function PaginaPerfil() {
 
       <p className="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">Configurações</p>
       <div className="overflow-hidden rounded-[var(--radius-card)] bg-card shadow-[var(--shadow-card)]">
-        <LinhaLink href="/perfil/dados" rotulo="Metas e preferências" />
-        <LinhaLink href="/lembretes" rotulo="Lembretes" />
-        <LinhaLink href="/relatorios" rotulo="Relatórios" />
-        <LinhaLink href="/perfil/privacidade" rotulo="Privacidade e dados" ultima />
+        <LinhaLink href="/perfil/dados" rotulo="Metas e preferências" Icone={IconeAlvo} />
+        <LinhaLink href="/lembretes" rotulo="Lembretes" Icone={IconeSino} />
+        <LinhaLink href="/relatorios" rotulo="Relatórios" Icone={IconeGrafico} />
+        <LinhaLink href="/conquistas" rotulo="Consistência e conquistas" Icone={IconeTrofeu} />
+        <LinhaLink href="/perfil/privacidade" rotulo="Privacidade e dados" Icone={IconeCadeado} ultima />
       </div>
 
       <button
@@ -82,16 +84,31 @@ function LinhaDado({ rotulo, valor, ultima }: { rotulo: string; valor: string; u
   );
 }
 
-function LinhaLink({ href, rotulo, ultima }: { href: string; rotulo: string; ultima?: boolean }) {
+function LinhaLink({
+  href,
+  rotulo,
+  Icone,
+  ultima,
+}: {
+  href: string;
+  rotulo: string;
+  Icone: ComponentType<SVGProps<SVGSVGElement>>;
+  ultima?: boolean;
+}) {
   return (
     <Link
       href={href}
-      className={`flex items-center justify-between px-4 py-3.5 hover:bg-black/[0.02] ${
+      className={`flex items-center justify-between px-4 py-2.5 hover:bg-black/[0.02] ${
         ultima ? "" : "border-b border-black/5"
       }`}
     >
-      <span className="text-sm text-tinta">{rotulo}</span>
-      <span className="text-sm font-medium text-tinta-2" aria-hidden>›</span>
+      <span className="flex items-center gap-3 text-sm text-tinta">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-verde-claro/35 text-brand">
+          <Icone width={17} height={17} aria-hidden />
+        </span>
+        {rotulo}
+      </span>
+      <IconeSetaDir width={16} height={16} className="text-tinta-2" aria-hidden />
     </Link>
   );
 }

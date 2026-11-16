@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { LogoSaude } from "@/components/decor";
+import { IconeSetaDir } from "@/components/icons";
 import CalculadoraMeta from "@/components/landing/CalculadoraMeta";
 
 // Landing pública (Server Component). O app em si vive em /inicio.
@@ -74,7 +75,7 @@ const DUVIDAS = [
   },
   {
     p: "Os lembretes funcionam no iPhone?",
-    r: "Sim, depois que você adiciona o app à tela de início (Safari → Compartilhar → Adicionar à Tela de Início) e permite as notificações. É uma exigência do iOS para apps web.",
+    r: "Sim, depois que você adiciona o app à tela de início (no Safari, toque em Compartilhar e depois em Adicionar à Tela de Início) e permite as notificações. É uma exigência do iOS para apps web.",
   },
   {
     p: "E o café, o chá e o suco que eu bebo?",
@@ -220,9 +221,9 @@ export default function Landing() {
               toque de distância.
             </p>
             <ul className="mt-5 space-y-2 text-sm text-tinta">
-              <li><strong className="font-semibold">iPhone:</strong> Safari → Compartilhar → Adicionar à Tela de Início</li>
-              <li><strong className="font-semibold">Android:</strong> Chrome → menu ⋮ → Instalar app</li>
-              <li><strong className="font-semibold">Computador:</strong> ícone de instalar na barra de endereço</li>
+              <li><Passos rotulo="iPhone" passos={["Safari", "Compartilhar", "Adicionar à Tela de Início"]} /></li>
+              <li><Passos rotulo="Android" passos={["Chrome", "Menu de três pontos", "Instalar app"]} /></li>
+              <li><Passos rotulo="Computador" passos={["Ícone de instalar na barra de endereço"]} /></li>
             </ul>
           </div>
           <div className="rounded-[var(--radius-card)] bg-card p-7 shadow-[var(--shadow-card)]">
@@ -288,6 +289,21 @@ export default function Landing() {
         </div>
       </footer>
     </div>
+  );
+}
+
+/** Caminho de toques: "Safari > Compartilhar > …" com ícone de seta entre os passos. */
+function Passos({ rotulo, passos }: { rotulo: string; passos: string[] }) {
+  return (
+    <span className="flex flex-wrap items-center gap-x-1 gap-y-1">
+      <strong className="mr-1 font-semibold">{rotulo}:</strong>
+      {passos.map((p, i) => (
+        <span key={p} className="flex items-center gap-1">
+          {i > 0 && <IconeSetaDir width={12} height={12} className="text-tinta-2" aria-label="depois" />}
+          <span className="rounded-md bg-superficie px-1.5 py-0.5">{p}</span>
+        </span>
+      ))}
+    </span>
   );
 }
 

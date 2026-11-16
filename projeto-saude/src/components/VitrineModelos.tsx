@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { IconeRefeicao } from "./icons";
+import { IconeRefeicao, IconeSetaDir } from "./icons";
 import { MODELOS_REGIME } from "@/lib/modelosRegime";
 import { nomeObjetivo } from "@/lib/refeicoes";
 import type { ObjetivoRegime } from "@/lib/tipos";
@@ -68,9 +68,11 @@ export default function VitrineModelos() {
                 ))}
               </div>
 
-              <p className="mt-3 border-t border-black/5 pt-2.5 text-xs text-tinta-2">
+              <p className="mt-3 flex items-center justify-between border-t border-black/5 pt-2.5 text-xs text-tinta-2">
                 {m.duracaoDias} dias · {m.refeicoes.length} refeições por dia
-                <span className="float-right font-semibold text-brand">Ver modelo ›</span>
+                <span className="flex items-center gap-0.5 font-semibold text-brand">
+                  Ver modelo <IconeSetaDir width={14} height={14} aria-hidden />
+                </span>
               </p>
             </Link>
           </li>
