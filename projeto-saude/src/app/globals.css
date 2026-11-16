@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Design System — Projeto Saúde (premium, estilo iOS, verde).
+/* Design System — Orvalho (premium, estilo iOS, verde).
    Tailwind v4: tokens definidos em @theme viram utilitários (bg-brand, text-menta…). */
 @theme {
   --color-brand: #1b4b3a; /* verde primário */

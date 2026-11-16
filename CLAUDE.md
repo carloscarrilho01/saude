@@ -1,8 +1,10 @@
-# CLAUDE.md — Projeto Saúde
+# CLAUDE.md — Orvalho (ex-"Projeto Saúde")
 
 Instruções de projeto para o agente. Leia antes de implementar qualquer coisa.
 
 ## O que é este projeto
+**Nome do produto: Orvalho** (marca exibida ao usuário). Pastas, repositório e chaves do
+localStorage (`saude.*`) mantêm o nome antigo de propósito — não renomear sem migração.
 PWA (web app instalável, mobile-first) de saúde e hidratação. O usuário calcula sua meta
 diária de água pelo peso/idade, registra consumo de água e refeições, recebe lembretes e
 segue regimes (planos alimentares).

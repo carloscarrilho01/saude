@@ -69,7 +69,7 @@ export default function Onboarding() {
           <div className="mb-6 drop-shadow-sm">
             <LogoSaude size={104} />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-brand">Projeto Saúde</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-brand">Orvalho</h1>
           <p className="mt-3 max-w-xs text-tinta-2">
             Hidratação, alimentação e hábitos saudáveis em um só lugar.
           </p>

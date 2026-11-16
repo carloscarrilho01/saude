@@ -1,4 +1,4 @@
-// Service Worker — Projeto Saúde (PWA)
+// Service Worker — Orvalho (PWA)
 // v1: habilita instalação na tela inicial, exibe notificações de lembrete e
 // trata o clique. Push com app fechado (VAPID) entra na fase do backend.
 

@@ -7,11 +7,11 @@ import CalculadoraMeta from "@/components/landing/CalculadoraMeta";
 // Landing pública (Server Component). O app em si vive em /inicio.
 
 export const metadata: Metadata = {
-  title: "Projeto Saúde — sua meta de água, calculada e lembrada",
+  title: "Orvalho — sua meta de água, calculada e lembrada",
   description:
     "Descubra quanto de água beber pelo seu peso e idade, receba lembretes no seu horário e acompanhe água, refeições e plano alimentar num só lugar.",
   openGraph: {
-    title: "Projeto Saúde — sua meta de água, calculada e lembrada",
+    title: "Orvalho — sua meta de água, calculada e lembrada",
     description:
       "Meta de hidratação personalizada, lembretes no seu horário e diário alimentar simples. Funciona no navegador, sem baixar nada.",
     locale: "pt_BR",
@@ -70,7 +70,7 @@ const DUVIDAS = [
   },
   {
     p: "Preciso baixar na App Store ou no Google Play?",
-    r: "Não. O Projeto Saúde abre no navegador do celular ou do computador e pode ser instalado na tela inicial como um app, sem passar pela loja.",
+    r: "Não. O Orvalho abre no navegador do celular ou do computador e pode ser instalado na tela inicial como um app, sem passar pela loja.",
   },
   {
     p: "Os lembretes funcionam no iPhone?",
@@ -100,9 +100,9 @@ export default function Landing() {
       </div>
 
       <header className="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Projeto Saúde, página inicial">
+        <Link href="/" className="flex items-center gap-2.5" aria-label="Orvalho, página inicial">
           <LogoSaude size={36} />
-          <span className="text-lg font-extrabold tracking-tight text-brand">Projeto Saúde</span>
+          <span className="text-lg font-extrabold tracking-tight text-brand">Orvalho</span>
         </Link>
         <nav aria-label="Seções" className="hidden items-center gap-7 text-sm font-medium text-tinta-2 md:flex">
           <a href="#como-funciona" className="hover:text-brand">Como funciona</a>
@@ -129,7 +129,7 @@ export default function Landing() {
               Quanto de água o seu corpo pede&nbsp;hoje?
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-tinta-2">
-              Descubra em segundos, pelo seu peso e idade. Depois, o Projeto Saúde lembra você de beber no
+              Descubra em segundos, pelo seu peso e idade. Depois, o Orvalho lembra você de beber no
               seu horário e reúne água, refeições e plano alimentar num só lugar.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -276,11 +276,11 @@ export default function Landing() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-xs text-tinta-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="flex items-center gap-2">
             <LogoSaude size={22} />
-            <span className="font-semibold text-tinta">Projeto Saúde</span>
+            <span className="font-semibold text-tinta">Orvalho</span>
             <span>© {new Date().getFullYear()}</span>
           </div>
           <p className="max-w-xl sm:text-right">
-            As metas e informações do Projeto Saúde são estimativas de apoio a hábitos e não substituem
+            As metas e informações do Orvalho são estimativas de apoio a hábitos e não substituem
             avaliação, diagnóstico ou prescrição de profissionais de saúde.
           </p>
         </div>

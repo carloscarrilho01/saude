@@ -379,7 +379,7 @@ export function adiarLembretes(minutos: number) {
 // --- Privacidade (LGPD §4.1): exportar e excluir ---
 
 export interface ExportacaoDados {
-  formato: "projeto-saude.v1";
+  formato: "orvalho.v1";
   exportadoEm: string;
   perfil: Perfil | null;
   meta: MetaAgua | null;
@@ -394,7 +394,7 @@ export interface ExportacaoDados {
 /** Reúne todos os dados do usuário num objeto legível (para download em JSON). */
 export function exportarDados(): ExportacaoDados {
   return {
-    formato: "projeto-saude.v1",
+    formato: "orvalho.v1",
     exportadoEm: new Date().toISOString(),
     perfil: getPerfil(),
     meta: getMeta(),

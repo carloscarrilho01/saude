@@ -1,6 +1,6 @@
 {
-  "name": "Projeto Saúde",
-  "short_name": "Saúde",
+  "name": "Orvalho",
+  "short_name": "Orvalho",
   "description": "Hidratação, alimentação e hábitos saudáveis em um só lugar.",
   "start_url": "/inicio",
   "display": "standalone",

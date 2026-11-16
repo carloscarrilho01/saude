@@ -1,4 +1,4 @@
-// Tipos de domínio do Projeto Saúde.
+// Tipos de domínio do Orvalho.
 // Mantidos em um só lugar para a camada de dados e a UI compartilharem.
 
 export type Sexo = "feminino" | "masculino" | "outro";
