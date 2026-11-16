@@ -208,7 +208,7 @@ O app deve detectar suporte e permissão em tempo de execução e exibir o estad
 - RF-5.4: Acompanhar aderência: quanto do planejado foi cumprido no dia e na semana.
 - RF-5.5: Editar, pausar ou encerrar um regime.
 - RF-5.6: Histórico de regimes anteriores.
-- RF-5.7: (Opcional v2) Modelos prontos de regime para o usuário clonar.
+- RF-5.7: Modelos prontos de regime para o usuário clonar (aba "Explorar"). **Antecipado para a v1 por decisão de produto (nov/2026).** Os modelos são rotinas de organização (horários + tipos de refeição, sem calorias ou porções), baseados no Guia Alimentar para a População Brasileira, e devem passar pela mesma revisão profissional da §10.1 antes do lançamento.
 
 **Regras de ativação e encerramento:**
 - Só pode haver **um regime ativo por vez**. Ativar um novo regime pausa automaticamente o anterior.
@@ -523,8 +523,8 @@ O escopo funcional do MVP permanece o definido na §8. Esta classificação escl
 | Prioridade | Itens |
 |---|---|
 | **v1 essencial** | Conta e perfil; cálculo configurável sujeito à aprovação clínica; registro e histórico de água; lembretes com comportamento compatível com a plataforma; regimes e aderência básica; diário manual; dashboard; segurança e privacidade; estados de erro, vazio, carregando e offline conforme requisitos. |
-| **v1 opcional / acabamento** | Streak e animação/haptics de celebração; foto no formulário de refeição (a foto não implica reconhecimento); gráficos avançados além do resumo semanal; refinamentos visuais que não bloqueiem os fluxos principais. |
-| **Futuro (v2+)** | Explorar/modelos prontos de regimes; base de alimentos e autocomplete; macros automáticos; IA/reconhecimento por foto; wearables; acompanhamento profissional; lembrete por e-mail; aderência parcial ou combinada com água. |
+| **v1 opcional / acabamento** | Explorar com modelos prontos de regime (antecipado, ver RF-5.7); streak e animação/haptics de celebração; foto no formulário de refeição (a foto não implica reconhecimento); gráficos avançados além do resumo semanal; refinamentos visuais que não bloqueiem os fluxos principais. |
+| **Futuro (v2+)** | Base de alimentos e autocomplete; macros automáticos; IA/reconhecimento por foto; wearables; acompanhamento profissional; lembrete por e-mail; aderência parcial ou combinada com água. |
 
 Uma funcionalidade marcada como essencial só pode ser retirada da v1 por decisão explícita de produto e atualização deste quadro, dos critérios de aceite e das telas relacionadas.
 
@@ -541,7 +541,7 @@ As 12 telas aprovadas e a qual requisito cada uma atende:
 5. **Modal Registrar água** — stepper 300 ml, atalhos 200/300/500 ml e 1 L, botão Registrar. → RF-3.1
 6. **Diário alimentar** — abas por dia, lista de refeições (Café, Almoço, Lanche, Jantar) com check, botão *Adicionar refeição*. → RF-6.4, §3.6
 7. **Adicionar refeição** — foto, tipo de refeição, horário, itens com quantidade, botão Salvar. → RF-6.1, RF-6.2
-8. **Planos (Regimes)** — lista de planos do usuário com status e % de aderência, *Criar novo plano*. A aba *Explorar* fica para v2 junto com os modelos prontos. → RF-5.1, RF-5.3, RF-5.4
+8. **Planos (Regimes)** — lista de planos do usuário com status e % de aderência, *Criar novo plano*. A aba *Explorar* traz os modelos prontos (RF-5.7). → RF-5.1, RF-5.3, RF-5.4, RF-5.7
 9. **Detalhe do plano (Emagrecimento)** — duração, aderência 75%, abas Plano/Refeições/Orientações, refeições do dia. → RF-5.2, RF-5.4
 10. **Lembretes** — toggle Ativar, frequência, período (08h–22h), dias da semana, prévia da notificação. → RF-4.1 a RF-4.5
 11. **Relatórios** — abas Água/Alimentação/Geral, média diária, gráfico de barras 7 dias, meta atingida e aderência. → RF-3.5, §7

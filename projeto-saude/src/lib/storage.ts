@@ -537,3 +537,23 @@ export function limparTudo() {
   Object.values(CHAVES).forEach((c) => window.localStorage.removeItem(c));
   notificar();
 }
+
+// --- Modelos de regime (RF-5.7) ---
+
+/** Cria um regime do usuário a partir de um modelo pronto (cópia independente). */
+export function criarRegimeDeModelo(
+  modelo: { nome: string; objetivo: Regime["objetivo"]; duracaoDias: number; refeicoes: { tipo: RefeicaoPlanejada["tipo"]; horario: string; descricao: string }[] },
+  ativar: boolean,
+): Regime {
+  const regime = criarRegime({
+    nome: modelo.nome,
+    objetivo: modelo.objetivo,
+    dataInicio: dataLocalHoje(getPerfil()?.fuso),
+    duracaoDias: modelo.duracaoDias,
+  });
+  modelo.refeicoes.forEach((r, ordem) =>
+    adicionarRefeicaoPlanejada({ regimeId: regime.id, tipo: r.tipo, horario: r.horario, descricao: r.descricao, ordem }),
+  );
+  if (ativar) ativarRegime(regime.id);
+  return regime;
+}

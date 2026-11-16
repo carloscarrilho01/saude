@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import VitrineModelos from "@/components/VitrineModelos";
 import { IconeMais } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
@@ -18,8 +20,19 @@ import { nomeObjetivo } from "@/lib/refeicoes";
 import type { Regime, StatusRegime } from "@/lib/tipos";
 
 export default function PaginaPlanos() {
+  return (
+    <Suspense fallback={<div className="p-6 text-tinta-2">Carregando…</div>}>
+      <ConteudoPlanos />
+    </Suspense>
+  );
+}
+
+function ConteudoPlanos() {
   const pronto = useStorePronto();
-  const [aba, setAba] = useState<"meus" | "explorar">("meus");
+  const router = useRouter();
+  // aba na URL: voltar do detalhe de um modelo retorna para "Explorar"
+  const aba: "meus" | "explorar" = useSearchParams().get("aba") === "explorar" ? "explorar" : "meus";
+  const setAba = (a: "meus" | "explorar") => router.replace(a === "explorar" ? "/planos?aba=explorar" : "/planos", { scroll: false });
 
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
@@ -34,6 +47,7 @@ export default function PaginaPlanos() {
         {(["meus", "explorar"] as const).map((a) => (
           <button
             key={a}
+            aria-pressed={aba === a}
             onClick={() => setAba(a)}
             className={`flex-1 rounded-full py-2 text-sm font-semibold transition ${
               aba === a ? "bg-brand text-white" : "text-tinta-2"
@@ -45,16 +59,19 @@ export default function PaginaPlanos() {
       </div>
 
       {aba === "explorar" ? (
-        <div className="rounded-[var(--radius-card)] bg-card p-8 text-center shadow-[var(--shadow-card)]">
-          <p className="text-sm text-tinta-2">
-            Modelos prontos de regime chegam na v2. Por enquanto, crie o seu do zero.
-          </p>
-        </div>
+        <VitrineModelos />
       ) : regimes.length === 0 ? (
         <div className="rounded-[var(--radius-card)] bg-card p-8 text-center shadow-[var(--shadow-card)]">
           <p className="text-sm text-tinta-2">
-            Você ainda não tem planos. Crie um regime para organizar suas refeições e acompanhar a aderência.
+            Você ainda não tem planos. Crie um do zero ou comece por um modelo pronto.
           </p>
+          <button
+            type="button"
+            onClick={() => setAba("explorar")}
+            className="mt-4 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            Ver modelos prontos
+          </button>
         </div>
       ) : (
         <ul className="space-y-3">
@@ -70,7 +87,7 @@ export default function PaginaPlanos() {
         href="/planos/novo"
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand/40 py-4 text-sm font-semibold text-brand"
       >
-        <IconeMais width={18} height={18} /> Criar novo plano
+        <IconeMais width={18} height={18} /> {aba === "explorar" ? "Prefiro criar do zero" : "Criar novo plano"}
       </Link>
     </div>
   );
