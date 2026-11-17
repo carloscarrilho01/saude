@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Design System — Projeto Saúde (premium, estilo iOS, verde).
+/* Design System — Orvalho (premium, estilo iOS, verde).
    Tailwind v4: tokens definidos em @theme viram utilitários (bg-brand, text-menta…). */
 @theme {
   --color-brand: #1b4b3a; /* verde primário */
@@ -52,4 +52,137 @@ body {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* Landing: slider de peso da calculadora */
+.faixa-peso {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.15);
+  accent-color: var(--color-menta);
+}
+.faixa-peso::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--color-menta);
+  border: 3px solid #fff;
+  cursor: pointer;
+}
+.faixa-peso::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-menta);
+  border: 3px solid #fff;
+  cursor: pointer;
+}
+.faixa-peso:focus-visible {
+  outline: 2px solid var(--color-menta);
+  outline-offset: 6px;
+}
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Celebração de meta */
+@keyframes agua-sobe {
+  from { height: 0%; }
+  to { height: 62%; }
+}
+@keyframes onda {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes gota-sobe {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-80vh) scale(1); opacity: 0; }
+}
+@keyframes pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.agua-sobe { height: 62%; animation: agua-sobe 1.4s cubic-bezier(.2,.8,.2,1) both; }
+.onda {
+  background: radial-gradient(20px 14px at 20px 20px, rgb(52 211 153 / 0.45) 98%, transparent) 0 0 / 40px 40px repeat-x;
+  animation: onda 3s linear infinite;
+}
+.gota-sobe { animation: gota-sobe 2.6s ease-out infinite both; }
+.pop { animation: pop 0.6s 0.2s cubic-bezier(.2,.8,.2,1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .gota-sobe { display: none; }
+  .onda { animation: none; }
+}
+
+/* ============================================================
+   Movimento — curto, com propósito, estilo iOS.
+   A regra global de prefers-reduced-motion (acima) zera as durações.
+   ============================================================ */
+@keyframes entrar-pagina {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fundo-aparece {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes folha-sobe {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+@keyframes check-pop {
+  0% { transform: scale(0.6); }
+  55% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+@keyframes flutua-sobe {
+  0% { opacity: 0; transform: translate(-50%, 4px) scale(0.9); }
+  15% { opacity: 1; transform: translate(-50%, -6px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -46px) scale(1); }
+}
+@keyframes anel-encher {
+  from { stroke-dashoffset: var(--anel-de); }
+  to { stroke-dashoffset: var(--anel-para); }
+}
+@keyframes aba-ativa {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.entrar-pagina { animation: entrar-pagina 320ms cubic-bezier(.2,.8,.2,1) backwards; }
+/* cascata: defina --i (0, 1, 2…) no style de cada item */
+.surgir {
+  animation: surgir 460ms cubic-bezier(.2,.8,.2,1) backwards;
+  animation-delay: calc(var(--i, 0) * 55ms + 40ms);
+}
+.fundo-aparece { animation: fundo-aparece 200ms ease-out both; }
+.folha-sobe { animation: folha-sobe 340ms cubic-bezier(.2,.9,.25,1) both; }
+@media (min-width: 640px) {
+  .folha-sobe { animation: surgir 260ms cubic-bezier(.2,.8,.2,1) both; }
+}
+.check-pop { animation: check-pop 380ms cubic-bezier(.2,.8,.2,1) both; }
+.flutua-sobe { animation: flutua-sobe 900ms cubic-bezier(.2,.8,.2,1) both; }
+.anel-encher { animation: anel-encher 1s cubic-bezier(.2,.8,.2,1) backwards; }
+.aba-ativa { animation: aba-ativa 260ms cubic-bezier(.2,.8,.2,1) both; }
+
+/* toque: leve afundamento em tudo que é clicável dentro do app */
+.toque { transition: transform 120ms ease; }
+.toque:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .surgir, .entrar-pagina { animation-delay: 0s !important; }
+  .toque:active { transform: none; }
 }

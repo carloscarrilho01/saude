@@ -102,3 +102,16 @@ export function percentualMeta(consumidoMl: number, metaMl: number): number {
   if (metaMl <= 0) return 0;
   return Math.max(0, Math.min(100, Math.round((consumidoMl / metaMl) * 100)));
 }
+
+/**
+ * Meta do dia considerando um clima informado só para aquele dia.
+ * Troca o ajuste de clima embutido na meta pelo ajuste do clima do dia.
+ * Sem clima do dia → a própria meta.
+ */
+export function metaComClimaDoDia(
+  meta: { metaMl: number; ajusteClimaMl: number },
+  climaDia?: Clima | null,
+): number {
+  if (!climaDia) return meta.metaMl;
+  return meta.metaMl - meta.ajusteClimaMl + (AJUSTE_CLIMA_ML[climaDia] ?? 0);
+}

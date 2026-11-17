@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getModelo } from "@/lib/modelosRegime";
 import { IconeSetaEsq, IconeMais, IconeLixeira } from "@/components/icons";
 import {
   criarRegime,
@@ -28,15 +29,27 @@ const SUGESTAO_HORARIO: Record<TipoRefeicao, string> = {
 };
 
 export default function NovoPlano() {
+  return (
+    <Suspense fallback={<div className="p-6 text-tinta-2">Carregando…</div>}>
+      <FormularioPlano />
+    </Suspense>
+  );
+}
+
+function FormularioPlano() {
   const router = useRouter();
-  const [nome, setNome] = useState("");
-  const [objetivo, setObjetivo] = useState<ObjetivoRegime>("perder");
-  const [duracao, setDuracao] = useState("30");
+  // ?modelo=slug → formulário pré-preenchido a partir de um modelo pronto (Explorar)
+  const modelo = getModelo(useSearchParams().get("modelo") ?? "");
+  const [nome, setNome] = useState(modelo?.nome ?? "");
+  const [objetivo, setObjetivo] = useState<ObjetivoRegime>(modelo?.objetivo ?? "perder");
+  const [duracao, setDuracao] = useState(String(modelo?.duracaoDias ?? 30));
   const [ativarAoCriar, setAtivarAoCriar] = useState(true);
-  const [refeicoes, setRefeicoes] = useState<RefeicaoRascunho[]>([
-    { tipo: "cafe", horario: "08:00", descricao: "" },
-    { tipo: "almoco", horario: "12:00", descricao: "" },
-  ]);
+  const [refeicoes, setRefeicoes] = useState<RefeicaoRascunho[]>(
+    modelo?.refeicoes.map((r) => ({ ...r })) ?? [
+      { tipo: "cafe", horario: "08:00", descricao: "" },
+      { tipo: "almoco", horario: "12:00", descricao: "" },
+    ],
+  );
 
   const duracaoNum = parseInt(duracao, 10);
   const valido = nome.trim() !== "" && !Number.isNaN(duracaoNum) && duracaoNum > 0;
@@ -80,8 +93,13 @@ export default function NovoPlano() {
         <button onClick={() => router.back()} aria-label="Voltar" className="flex h-9 w-9 items-center justify-center rounded-full text-tinta-2 hover:bg-black/5">
           <IconeSetaEsq width={20} height={20} />
         </button>
-        <h1 className="text-xl font-extrabold text-tinta">Criar plano</h1>
+        <h1 className="text-xl font-extrabold text-tinta">{modelo ? "Personalizar plano" : "Criar plano"}</h1>
       </header>
+      {modelo && (
+        <p className="-mt-2 mb-4 rounded-2xl bg-verde-claro/30 px-4 py-3 text-xs text-brand">
+          Baseado no modelo <strong>{modelo.nome}</strong>. Ajuste horários e refeições do seu jeito.
+        </p>
+      )}
 
       <div className="space-y-3">
         <div>

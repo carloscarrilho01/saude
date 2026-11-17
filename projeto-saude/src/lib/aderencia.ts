@@ -23,22 +23,36 @@ export function refeicaoConcluida(
   );
 }
 
+/**
+ * A refeição faz parte do plano naquele dia? (PRD §3.5: alterações valem a
+ * partir da data local da alteração e não reescrevem dias anteriores.)
+ */
+export function refeicaoVigenteEm(r: RefeicaoPlanejada, dataLocal: string): boolean {
+  if (r.ativaDesde && dataLocal < r.ativaDesde) return false;
+  if (r.removidaEm && dataLocal >= r.removidaEm) return false;
+  return true;
+}
+
 export interface ResultadoAderencia {
   concluidas: number;
   total: number;
   pct: number;
 }
 
-/** Aderência de um dia: concluídas ÷ total de refeições planejadas. */
+/**
+ * Aderência de um dia: concluídas ÷ refeições planejadas vigentes naquele dia.
+ * Pode receber também refeições removidas — elas só contam nos dias em que valiam.
+ */
 export function aderenciaDoDia(
   refeicoes: RefeicaoPlanejada[],
   dataLocal: string,
   conclusoes: ConclusaoRefeicao[],
   itens: ItemDiario[],
 ): ResultadoAderencia {
-  const total = refeicoes.length;
+  const vigentes = refeicoes.filter((r) => refeicaoVigenteEm(r, dataLocal));
+  const total = vigentes.length;
   if (total === 0) return { concluidas: 0, total: 0, pct: 0 };
-  const concluidas = refeicoes.filter((r) =>
+  const concluidas = vigentes.filter((r) =>
     refeicaoConcluida(r.id, dataLocal, conclusoes, itens),
   ).length;
   return { concluidas, total, pct: Math.round((concluidas / total) * 100) };

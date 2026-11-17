@@ -31,7 +31,7 @@ Um web app onde o usuário cria sua conta, informa seus dados (peso, altura, ida
 - Contagem avançada de calorias por foto/IA de imagem.
 - Integração com wearables (Apple Watch, Fitbit, etc.).
 - Receitas e lista de compras.
-- Rede social / comparação entre usuários.
+- Rede social / comparação entre usuários. (Exceções na v1: compartilhar plano por link — RF-5.9 — e o mural de planos — RF-5.10, comunidade fase 1. Perfis públicos, seguidores, comentários, grupos e fotos públicas continuam fora da v1 e dependem de moderação e revisão de privacidade.)
 - Prescrição médica ou diagnóstico (ver seção 11 — Disclaimer).
 
 ---
@@ -208,7 +208,10 @@ O app deve detectar suporte e permissão em tempo de execução e exibir o estad
 - RF-5.4: Acompanhar aderência: quanto do planejado foi cumprido no dia e na semana.
 - RF-5.5: Editar, pausar ou encerrar um regime.
 - RF-5.6: Histórico de regimes anteriores.
-- RF-5.7: (Opcional v2) Modelos prontos de regime para o usuário clonar.
+- RF-5.8: Fotos de progresso por regime (opcional para o usuário): comparação "início × agora". **Na v1 as fotos ficam só no aparelho** (IndexedDB), com consentimento explícito antes da primeira foto, remoção de metadados (EXIF/GPS) e inclusão em exportar/excluir dados (§4.1). Envio à nuvem exige novo consentimento e revisão de privacidade.
+- RF-5.9: Compartilhar um regime por link: leva só a estrutura (nome, objetivo, duração, refeições) — nunca fotos, progresso ou perfil. Quem recebe vê o plano e pode adicioná-lo aos próprios planos. Não é rede social (ver §1.4).
+- RF-5.10: **Comunidade — fase 1: mural de planos** (decisão de produto, nov/2026). Publicar um plano (apelido, nome, descrição, refeições) por escolha explícita; feed com filtro por objetivo e ordem por recentes/mais salvos; salvar nos próprios planos; marcar "útil"; denunciar (3 denúncias de pessoas diferentes ocultam até revisão); autor pode tirar do mural. **Nunca** publica fotos, aderência ou dados de saúde. Texto sem links/contatos e sem promessa de resultado. Requer Supabase (leitura pública, escrita autenticada, contadores mantidos pelo banco — `supabase/schema.sql`); sem servidor, o mural roda em modo local (modelos oficiais + o que o usuário publicou). Fases 2 (perfis, grupos de desafio, comentários) e 3 (fotos públicas) seguem fora da v1.
+- RF-5.7: Modelos prontos de regime para o usuário clonar (aba "Explorar"). **Antecipado para a v1 por decisão de produto (nov/2026).** Os modelos são rotinas de organização (horários + tipos de refeição, sem calorias ou porções), baseados no Guia Alimentar para a População Brasileira, e devem passar pela mesma revisão profissional da §10.1 antes do lançamento.
 
 **Regras de ativação e encerramento:**
 - Só pode haver **um regime ativo por vez**. Ativar um novo regime pausa automaticamente o anterior.
@@ -273,6 +276,25 @@ Aderência semanal (%) = (soma das refeições concluídas nos 7 dias ÷ soma da
 - RF-6.8: (v2) Base de alimentos com busca para autocompletar calorias/macros.
 
 ---
+
+### 3.6.1 Caminhada com GPS (adicionado por decisão de produto, nov/2026)
+**Descrição:** gravar caminhadas com o GPS do aparelho e acompanhar os quilômetros.
+
+- RF-6.10: Iniciar, pausar, continuar e finalizar uma caminhada; mostrar distância, tempo em movimento e ritmo (min/km) ao vivo.
+- RF-6.11: Filtrar leituras ruins do GPS (precisão > 35 m, saltos acima de ~25 km/h, ruído < 4 m); o deslocamento durante a pausa não conta.
+- RF-6.12: Histórico com km da semana; percurso guardado simplificado.
+- RF-6.13: Compartilhar como imagem (km, tempo, ritmo, data e, opcionalmente, só a forma do percurso) — **nunca mapa, endereço ou coordenadas**.
+- **Privacidade:** consentimento antes do primeiro uso; GPS ligado só enquanto grava; dados só no aparelho na v1; entra em exportar/excluir (§4.1); dá para apagar o percurso e manter os números.
+- **Limitação de plataforma:** como PWA, a localização só chega com o app aberto na tela (Wake Lock mantém a tela acesa). Rastreio com tela bloqueada exige o app nativo (Capacitor + geolocalização em segundo plano).
+- Sem estimativa de calorias (exigiria parâmetros clínicos não validados).
+
+### 3.6.2 Treinos (adicionado por decisão de produto, nov/2026)
+- RF-6.20: Meta semanal de atividade em minutos ou nº de treinos. Padrão: **150 min/semana**, recomendação da OMS (2020) para adultos (150–300 min de atividade moderada); configurável.
+- RF-6.21: Registro manual de treino (tipo, duração, intensidade pela "regra da conversa", hoje/ontem, observação). Caminhadas com GPS contam na meta.
+- RF-6.22: Treinos em casa sem equipamento, recomendados pelo foco (começar do zero / perder peso / manter ativo), com versão mais fácil de cada exercício, aviso de segurança e modo guiado (cronômetro, descanso, registro ao concluir).
+- RF-6.23: Conquistas de caminhada (1ª caminhada; 1/3/5/10 km de uma vez; 10/42/100/250 km no total) e de treinos (1/10/30/100; semanas na meta), com aviso ao desbloquear.
+- RF-6.24: Demonstração de cada exercício: animação do boneco (todos os 23 exercícios) no detalhe do treino e no modo guiado; cada exercício aceita um vídeo real (`video`) que substitui a animação. Respeita "reduzir movimento".
+- **Conteúdo:** orientação geral, não prescrição. Exercícios, textos e futuros vídeos devem ser gravados com/revisados por profissional de educação física antes do lançamento (mesma regra da §10.1). Sem estimativa de calorias.
 
 ### 3.7 Dashboard / Painel
 **Descrição:** Tela inicial que resume o dia do usuário.
@@ -495,7 +517,9 @@ Barra fixa na base, presente nas telas principais:
 | **Água** | gota | Hidratação + histórico |
 | **Diário** | garfo/faca | Diário alimentar |
 | **Planos** | calendário | Regimes |
-| **Perfil** | pessoa | Perfil & configurações |
+| **Treinos** | halter | Meta semanal de atividade, caminhada com GPS, registro de treinos, treinos em casa |
+
+> **Mudança (nov/2026, decisão de produto):** a aba **Perfil** saiu da barra para dar lugar a **Treinos**; o Perfil abre pelo avatar no topo do Início.
 
 ### 12.6 Requisitos de experiência por módulo
 Como a estética é **Premium iOS**, cada módulo tem exigências de interação:
@@ -523,8 +547,8 @@ O escopo funcional do MVP permanece o definido na §8. Esta classificação escl
 | Prioridade | Itens |
 |---|---|
 | **v1 essencial** | Conta e perfil; cálculo configurável sujeito à aprovação clínica; registro e histórico de água; lembretes com comportamento compatível com a plataforma; regimes e aderência básica; diário manual; dashboard; segurança e privacidade; estados de erro, vazio, carregando e offline conforme requisitos. |
-| **v1 opcional / acabamento** | Streak e animação/haptics de celebração; foto no formulário de refeição (a foto não implica reconhecimento); gráficos avançados além do resumo semanal; refinamentos visuais que não bloqueiem os fluxos principais. |
-| **Futuro (v2+)** | Explorar/modelos prontos de regimes; base de alimentos e autocomplete; macros automáticos; IA/reconhecimento por foto; wearables; acompanhamento profissional; lembrete por e-mail; aderência parcial ou combinada com água. |
+| **v1 opcional / acabamento** | Explorar com modelos prontos de regime (antecipado, ver RF-5.7); streak e animação/haptics de celebração; foto no formulário de refeição (a foto não implica reconhecimento); gráficos avançados além do resumo semanal; refinamentos visuais que não bloqueiem os fluxos principais. |
+| **Futuro (v2+)** | Base de alimentos e autocomplete; macros automáticos; IA/reconhecimento por foto; wearables; acompanhamento profissional; lembrete por e-mail; aderência parcial ou combinada com água. |
 
 Uma funcionalidade marcada como essencial só pode ser retirada da v1 por decisão explícita de produto e atualização deste quadro, dos critérios de aceite e das telas relacionadas.
 
@@ -541,7 +565,7 @@ As 12 telas aprovadas e a qual requisito cada uma atende:
 5. **Modal Registrar água** — stepper 300 ml, atalhos 200/300/500 ml e 1 L, botão Registrar. → RF-3.1
 6. **Diário alimentar** — abas por dia, lista de refeições (Café, Almoço, Lanche, Jantar) com check, botão *Adicionar refeição*. → RF-6.4, §3.6
 7. **Adicionar refeição** — foto, tipo de refeição, horário, itens com quantidade, botão Salvar. → RF-6.1, RF-6.2
-8. **Planos (Regimes)** — lista de planos do usuário com status e % de aderência, *Criar novo plano*. A aba *Explorar* fica para v2 junto com os modelos prontos. → RF-5.1, RF-5.3, RF-5.4
+8. **Planos (Regimes)** — lista de planos do usuário com status e % de aderência, *Criar novo plano*. A aba *Explorar* traz os modelos prontos (RF-5.7). → RF-5.1, RF-5.3, RF-5.4, RF-5.7
 9. **Detalhe do plano (Emagrecimento)** — duração, aderência 75%, abas Plano/Refeições/Orientações, refeições do dia. → RF-5.2, RF-5.4
 10. **Lembretes** — toggle Ativar, frequência, período (08h–22h), dias da semana, prévia da notificação. → RF-4.1 a RF-4.5
 11. **Relatórios** — abas Água/Alimentação/Geral, média diária, gráfico de barras 7 dias, meta atingida e aderência. → RF-3.5, §7

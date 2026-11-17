@@ -8,7 +8,7 @@ import {
   IconeGota,
   IconeGarfo,
   IconeCalendario,
-  IconePessoa,
+  IconeHalter,
 } from "./icons";
 
 type Aba = {
@@ -18,11 +18,11 @@ type Aba = {
 };
 
 const ABAS: Aba[] = [
-  { href: "/", rotulo: "Início", Icone: IconeCasa },
+  { href: "/inicio", rotulo: "Início", Icone: IconeCasa },
   { href: "/agua", rotulo: "Água", Icone: IconeGota },
   { href: "/diario", rotulo: "Diário", Icone: IconeGarfo },
   { href: "/planos", rotulo: "Planos", Icone: IconeCalendario },
-  { href: "/perfil", rotulo: "Perfil", Icone: IconePessoa },
+  { href: "/treinos", rotulo: "Treinos", Icone: IconeHalter },
 ];
 
 export default function TabBar() {
@@ -36,22 +36,20 @@ export default function TabBar() {
     >
       <ul className="mx-auto flex max-w-[480px] items-stretch justify-around px-2 py-2">
         {ABAS.map(({ href, rotulo, Icone }) => {
-          const ativo = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          // Caminhada (GPS) faz parte de Treinos
+          const ativo = pathname.startsWith(href) || (href === "/treinos" && pathname.startsWith("/caminhada"));
           return (
             <li key={href} className="flex-1">
               <Link
                 href={href}
                 aria-current={ativo ? "page" : undefined}
-                className={`flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium transition-colors ${
+                className={`group flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium transition-colors ${
                   ativo ? "text-brand" : "text-tinta-2"
                 }`}
               >
-                <span
-                  className={`flex h-9 w-12 items-center justify-center rounded-full transition-colors ${
-                    ativo ? "bg-verde-claro/40" : ""
-                  }`}
-                >
-                  <Icone width={22} height={22} strokeWidth={ativo ? 2.1 : 1.8} />
+                <span className="relative flex h-9 w-12 items-center justify-center">
+                  {ativo && <span aria-hidden className="aba-ativa absolute inset-0 rounded-full bg-verde-claro/40" />}
+                  <Icone width={22} height={22} strokeWidth={ativo ? 2.1 : 1.8} className="relative transition-transform duration-200 group-active:scale-90" />
                 </span>
                 {rotulo}
               </Link>

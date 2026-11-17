@@ -1,4 +1,4 @@
-// Tipos de domínio do Projeto Saúde.
+// Tipos de domínio do Orvalho.
 // Mantidos em um só lugar para a camada de dados e a UI compartilharem.
 
 export type Sexo = "feminino" | "masculino" | "outro";
@@ -82,6 +82,10 @@ export interface RefeicaoPlanejada {
   horario: string; // "HH:MM"
   descricao: string;
   ordem: number;
+  /** Data local a partir da qual conta na aderência (ausente = desde o início). */
+  ativaDesde?: string;
+  /** Data local em que foi removida; deixa de contar a partir dela (soft delete, PRD §3.5). */
+  removidaEm?: string;
 }
 
 export interface Regime {
@@ -123,4 +127,23 @@ export interface ConfigLembretes {
   ultimoLembreteEm?: string;
   /** ISO até quando os lembretes estão adiados (snooze). */
   adiadoAte?: string;
+}
+
+// --- Hábitos (sequência, recipientes, ajuste do dia) ---
+
+export type TipoRecipiente = "copo" | "garrafa" | "caneca";
+
+/** Copo/garrafa personalizado do usuário para registro em 1 toque (RF-3.1). */
+export interface Recipiente {
+  id: string;
+  nome: string;
+  ml: number;
+  tipo: TipoRecipiente;
+}
+
+/** Consumo de um dia com a meta que valia naquele dia. */
+export interface DiaConsumo {
+  data: string; // "YYYY-MM-DD"
+  totalMl: number;
+  metaMl: number;
 }

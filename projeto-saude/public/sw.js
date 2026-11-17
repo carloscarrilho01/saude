@@ -1,4 +1,4 @@
-// Service Worker — Projeto Saúde (PWA)
+// Service Worker — Orvalho (PWA)
 // v1: habilita instalação na tela inicial, exibe notificações de lembrete e
 // trata o clique. Push com app fechado (VAPID) entra na fase do backend.
 
@@ -14,7 +14,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   const dados = event.data || {};
   if (dados.type === "LEMBRETE") {
-    self.registration.showNotification("Hora de se hidratar! 💧", {
+    self.registration.showNotification("Hora de se hidratar", {
       body: dados.body || "Que tal beber um pouco de água agora?",
       icon: "/icon.svg",
       badge: "/icon.svg",
@@ -34,7 +34,7 @@ self.addEventListener("push", (event) => {
     /* payload padrão */
   }
   event.waitUntil(
-    self.registration.showNotification("Hora de se hidratar! 💧", {
+    self.registration.showNotification("Hora de se hidratar", {
       body: payload.body,
       icon: "/icon.svg",
       badge: "/icon.svg",

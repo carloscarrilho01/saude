@@ -4,23 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogoSaude, FundoFolhas } from "@/components/decor";
 import { calcularMeta, formatarLitros, emCopos } from "@/lib/hidratacao";
-import { salvarPerfil, salvarMeta, fusoDoNavegador } from "@/lib/storage";
+import { salvarPerfil, salvarMeta, fusoDoNavegador, getPlanoPendente } from "@/lib/storage";
 import type { NivelAtividade, Sexo, Clima } from "@/lib/tipos";
+import { ATIVIDADES, CLIMAS } from "@/lib/perfilOpcoes";
 
 type Etapa = "boas-vindas" | "dados" | "resultado";
-
-const ATIVIDADES: { valor: NivelAtividade; nome: string; desc: string }[] = [
-  { valor: "sedentario", nome: "Sedentário", desc: "Pouco ou nenhum exercício" },
-  { valor: "leve", nome: "Leve", desc: "1–3× por semana" },
-  { valor: "moderado", nome: "Moderado", desc: "3–5× por semana" },
-  { valor: "intenso", nome: "Intenso", desc: "Treino diário / pesado" },
-];
-
-const CLIMAS: { valor: Clima; nome: string }[] = [
-  { valor: "ameno", nome: "Ameno" },
-  { valor: "quente", nome: "Quente" },
-  { valor: "muito_quente", nome: "Muito quente" },
-];
 
 export default function Onboarding() {
   const router = useRouter();
@@ -66,7 +54,8 @@ export default function Onboarding() {
       ajusteClimaMl: resultado.ajusteClimaMl,
       validoDesde: agora,
     });
-    router.push("/");
+    // chegou por um link de plano compartilhado? volta para ele
+    router.push(getPlanoPendente() ? "/importar" : "/inicio");
   }
 
   return (
@@ -81,7 +70,7 @@ export default function Onboarding() {
           <div className="mb-6 drop-shadow-sm">
             <LogoSaude size={104} />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-brand">Projeto Saúde</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-brand">Orvalho</h1>
           <p className="mt-3 max-w-xs text-tinta-2">
             Hidratação, alimentação e hábitos saudáveis em um só lugar.
           </p>
@@ -92,7 +81,7 @@ export default function Onboarding() {
             Começar
           </button>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/inicio")}
             className="mt-4 text-sm font-medium text-tinta-2"
           >
             Já tenho uma conta

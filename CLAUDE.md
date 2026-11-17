@@ -1,8 +1,10 @@
-# CLAUDE.md — Projeto Saúde
+# CLAUDE.md — Orvalho (ex-"Projeto Saúde")
 
 Instruções de projeto para o agente. Leia antes de implementar qualquer coisa.
 
 ## O que é este projeto
+**Nome do produto: Orvalho** (marca exibida ao usuário). Pastas, repositório e chaves do
+localStorage (`saude.*`) mantêm o nome antigo de propósito — não renomear sem migração.
 PWA (web app instalável, mobile-first) de saúde e hidratação. O usuário calcula sua meta
 diária de água pelo peso/idade, registra consumo de água e refeições, recebe lembretes e
 segue regimes (planos alimentares).
@@ -41,6 +43,8 @@ Rode sempre dentro de `projeto-saude/`:
 - `npm run build` — build de produção
 - `npm run lint` — ESLint
 
+Rotas: `/` = landing pública · `/inicio` = dashboard do app. Publicação: ver `projeto-saude/DEPLOY.md`.
+
 ## Convenções de código
 - **Idioma:** UI e textos em **português (pt-BR)**. Nomes de código em português quando for
   domínio (ex.: `calcularMeta`, `registroAgua`), inglês para termos técnicos neutros é ok.
@@ -58,7 +62,7 @@ Definir estes tokens no `@theme` do `globals.css`:
 - Alerta `#E5484D`
 - Fonte sans moderna (Inter/Geist), títulos bold/extrabold grandes.
 - Cards bem arredondados, sombras suaves, tab bar inferior de 5 abas:
-  **Início · Água · Diário · Planos · Perfil**.
+  **Início · Água · Diário · Planos · Treinos** (Perfil abre pelo avatar no Início — decisão nov/2026).
 - Prever estados: carregando, vazio, erro, offline (PRD §12.7).
 
 ## Regras de negócio que não podem ser violadas

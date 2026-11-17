@@ -8,15 +8,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Projeto Saúde",
+  title: "Orvalho",
   description:
     "Hidratação, alimentação e hábitos saudáveis em um só lugar. Calcule sua meta de água, registre o que bebe e come, e siga seus regimes.",
-  applicationName: "Projeto Saúde",
+  applicationName: "Orvalho",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Projeto Saúde",
+    title: "Orvalho",
   },
 };
 

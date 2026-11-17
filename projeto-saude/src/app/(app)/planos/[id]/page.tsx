@@ -1,7 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IconeSetaEsq, IconeCheck } from "@/components/icons";
+import { IconeSetaEsq, IconeCheck, IconeLapis, IconeRefeicao, IconePessoas } from "@/components/icons";
+import EditorPlano from "@/components/EditorPlano";
+import FotosProgresso from "@/components/FotosProgresso";
+import BotaoCompartilharPlano from "@/components/BotaoCompartilharPlano";
+import PublicarPlano from "@/components/mural/PublicarPlano";
 import { useStorePronto } from "@/lib/hooks";
 import {
   getRegime,
@@ -17,13 +22,15 @@ import {
   getPerfil,
 } from "@/lib/storage";
 import { aderenciaDoDia, refeicaoConcluida } from "@/lib/aderencia";
-import { nomeObjetivo, nomeRefeicao, emojiRefeicao } from "@/lib/refeicoes";
+import { nomeObjetivo, nomeRefeicao } from "@/lib/refeicoes";
 
 export default function DetalhePlano() {
   const pronto = useStorePronto();
   const router = useRouter();
   const params = useParams();
   const id = String(params.id);
+  const [editando, setEditando] = useState(false);
+  const [publicando, setPublicando] = useState(false);
 
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
@@ -82,19 +89,35 @@ export default function DetalhePlano() {
         )}
       </div>
 
-      <h2 className="mb-2 mt-6 text-sm font-bold text-tinta">Refeições do dia</h2>
+      {editando ? (
+        <EditorPlano regime={regime} refeicoes={refeicoes} aoTerminar={() => setEditando(false)} />
+      ) : (
+      <>
+      <div className="mb-2 mt-6 flex items-center justify-between">
+        <h2 className="text-sm font-bold text-tinta">Refeições do dia</h2>
+        {regime.status !== "encerrado" && (
+          <button type="button" onClick={() => setEditando(true)} className="flex items-center gap-1 text-sm font-semibold text-brand">
+            <IconeLapis width={15} height={15} /> Editar plano
+          </button>
+        )}
+      </div>
       {refeicoes.length === 0 ? (
         <div className="rounded-2xl bg-card p-6 text-center text-sm text-tinta-2 shadow-[var(--shadow-card)]">
-          Este plano ainda não tem refeições. (Edição de refeições: em breve.)
+          Este plano ainda não tem refeições.
+          {regime.status !== "encerrado" && (
+            <button type="button" onClick={() => setEditando(true)} className="mt-3 block w-full font-semibold text-brand">
+              Adicionar refeições
+            </button>
+          )}
         </div>
       ) : (
         <ul className="space-y-2">
-          {refeicoes.map((r) => {
+          {refeicoes.map((r, i) => {
             const concluida = refeicaoConcluida(r.id, hoje, conclusoes, itens);
             return (
-              <li key={r.id} className="flex items-center gap-3 rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-verde-claro/30 text-base">
-                  {emojiRefeicao(r.tipo)}
+              <li key={r.id} style={{ "--i": i } as React.CSSProperties} className="surgir flex items-center gap-3 rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-verde-claro/30 text-brand">
+                  <IconeRefeicao tipo={r.tipo} width={18} height={18} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-tinta">
@@ -106,7 +129,7 @@ export default function DetalhePlano() {
                   onClick={() => alternarConclusao(r.id, hoje)}
                   aria-label={concluida ? "Desmarcar" : "Marcar como concluída"}
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition ${
-                    concluida ? "border-brand bg-brand text-white" : "border-black/15 text-transparent"
+                    concluida ? "check-pop border-brand bg-brand text-white" : "border-black/15 text-transparent"
                   }`}
                 >
                   <IconeCheck width={16} height={16} />
@@ -116,6 +139,22 @@ export default function DetalhePlano() {
           })}
         </ul>
       )}
+
+      <FotosProgresso regime={regime} />
+
+      {refeicoes.length > 0 && (
+        <>
+          <button
+            type="button"
+            onClick={() => setPublicando(true)}
+            className="toque mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-brand/10 py-3.5 text-sm font-semibold text-brand"
+          >
+            <IconePessoas width={18} height={18} aria-hidden /> Publicar na comunidade
+          </button>
+          <BotaoCompartilharPlano regime={regime} refeicoes={refeicoes} />
+        </>
+      )}
+      {publicando && <PublicarPlano regime={regime} refeicoes={refeicoes} aoFechar={() => setPublicando(false)} />}
 
       {/* ações */}
       <div className="mt-6 space-y-2">
@@ -138,6 +177,8 @@ export default function DetalhePlano() {
           Remover plano
         </button>
       </div>
+      </>
+      )}
     </div>
   );
 }

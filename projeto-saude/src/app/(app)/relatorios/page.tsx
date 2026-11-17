@@ -7,15 +7,16 @@ import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import {
   getPerfil,
-  getMeta,
+  metaDoDia,
   consumoUltimosDias,
   getRegimeAtivo,
-  getRefeicoesPlanejadas,
+  getRefeicoesPlanejadasComHistorico,
   getTodasConclusoes,
   getTodosItensDiario,
 } from "@/lib/storage";
 import { formatarLitros } from "@/lib/hidratacao";
 import { aderenciaDoDia, aderenciaPeriodo } from "@/lib/aderencia";
+import { bateuMeta } from "@/lib/habitos";
 
 type Aba = "agua" | "alimentacao" | "geral";
 
@@ -27,7 +28,7 @@ export default function PaginaRelatorios() {
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
   const fuso = getPerfil()?.fuso;
-  const metaMl = getMeta()?.metaMl ?? 2000;
+  const metaMl = metaDoDia();
 
   // água — últimos 14 dias (para comparar semana atual vs anterior)
   const dias14 = consumoUltimosDias(14, fuso);
@@ -36,16 +37,18 @@ export default function PaginaRelatorios() {
   const mediaAtual = media(semanaAtual.map((d) => d.totalMl));
   const mediaAnterior = media(semanaAnterior.map((d) => d.totalMl));
   const variacao = mediaAnterior > 0 ? Math.round(((mediaAtual - mediaAnterior) / mediaAnterior) * 100) : 0;
-  const diasBatidos = semanaAtual.filter((d) => d.totalMl >= metaMl).length;
+  const diasBatidos = semanaAtual.filter(bateuMeta).length;
 
   // alimentação
   const regime = getRegimeAtivo();
-  const refeicoes = regime ? getRefeicoesPlanejadas(regime.id) : [];
+  const refeicoes = regime ? getRefeicoesPlanejadasComHistorico(regime.id) : [];
   const conclusoes = getTodasConclusoes();
   const itens = getTodosItensDiario();
   const datas7 = semanaAtual.map((d) => d.data);
-  const aderSemana = aderenciaPeriodo(refeicoes, datas7, conclusoes, itens);
-  const aderPorDia = datas7.map((d) => aderenciaDoDia(refeicoes, d, conclusoes, itens).pct);
+  // dias antes do início do plano não têm refeições planejadas → fora do denominador (§3.5)
+  const noPlano = (d: string) => !regime || d >= regime.dataInicio;
+  const aderSemana = aderenciaPeriodo(refeicoes, datas7.filter(noPlano), conclusoes, itens);
+  const aderPorDia = datas7.map((d) => (noPlano(d) ? aderenciaDoDia(refeicoes, d, conclusoes, itens).pct : 0));
 
   return (
     <div className="relative px-5 pb-10 pt-5" style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}>

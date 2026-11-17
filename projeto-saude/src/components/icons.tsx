@@ -142,3 +142,204 @@ export function IconeRefeicao({ tipo, ...p }: { tipo: TipoRefeicao } & P) {
       return <IconeGarfo {...p} />;
   }
 }
+
+export const IconeTrofeu = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M8 21h8M12 17v4" />
+    <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+    <path d="M17 6h2.5a1.5 1.5 0 0 1 1.5 1.5c0 2-1.8 3.5-4 3.5M7 6H4.5A1.5 1.5 0 0 0 3 7.5C3 9.5 4.8 11 7 11" />
+  </svg>
+);
+
+export const IconeGarrafa = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M10 2h4v3l1.5 2.5V20a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V7.5L10 5V2Z" />
+    <path d="M8.5 12h7" />
+  </svg>
+);
+
+export const IconeCaneca = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4 7h12v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z" />
+    <path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16" />
+  </svg>
+);
+
+export const IconeCopo = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M5 4h14l-1.6 15.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8L5 4Z" />
+    <path d="M6 10h12" />
+  </svg>
+);
+
+export const IconeSol = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+  </svg>
+);
+
+export const IconeFechar = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M6 6l12 12M18 6 6 18" />
+  </svg>
+);
+
+export const IconeBrilho = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M6.3 17.7l2.1-2.1M15.6 8.4l2.1-2.1" />
+  </svg>
+);
+
+export const IconeCadeado = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="5" y="10.5" width="14" height="10" rx="2.5" />
+    <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
+  </svg>
+);
+
+export const IconeGrafico = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4 20h16" />
+    <path d="M7 16v-4M12 16V8M17 16v-6" />
+  </svg>
+);
+
+export const IconeAlvo = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="8" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="12" cy="12" r="0.8" fill="currentColor" />
+  </svg>
+);
+
+export const IconeCamera = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.4-2h5l1.4 2h1.6A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-8Z" />
+    <circle cx="12" cy="12.5" r="3.5" />
+  </svg>
+);
+
+export const IconeCompartilhar = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 3v12M7.5 7.5 12 3l4.5 4.5" />
+    <path d="M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12" />
+  </svg>
+);
+
+export const IconeLink = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
+    <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+  </svg>
+);
+
+export const IconeUtil = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M7 10v10H4.5A1.5 1.5 0 0 1 3 18.5v-7A1.5 1.5 0 0 1 4.5 10H7Z" />
+    <path d="M7 10l4-7a2.2 2.2 0 0 1 2.6 2.6L13 9.5h5.3a2 2 0 0 1 2 2.3l-1.1 6.5a2 2 0 0 1-2 1.7H7" />
+  </svg>
+);
+
+export const IconeMarcador = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M6.5 3.5h11a1 1 0 0 1 1 1V21l-6.5-4.2L5.5 21V4.5a1 1 0 0 1 1-1Z" />
+  </svg>
+);
+
+export const IconeBandeira = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M5 21V4" />
+    <path d="M5 4.5c3-1.5 5.5 1.5 8.5 0s4.5-.5 5.5 0v9c-1-.5-2.5-1.5-5.5 0s-5.5-1.5-8.5 0" />
+  </svg>
+);
+
+export const IconePessoas = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="9" cy="8" r="3.2" />
+    <path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" />
+    <path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.8c1.8.8 3 2.6 3 5.2" />
+  </svg>
+);
+
+export const IconeTenis = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M3 16.5V13c0-.6.5-1 1-1 1.5 0 2.7-.6 3.5-2l1.2-2.2a1 1 0 0 1 1.5-.3l1.3 1c.9.7 2.1.6 2.9-.2l.4-.4 2.4 3.3c.6.9 1.6 1.4 2.7 1.6.6.1 1.1.6 1.1 1.2v2.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z" />
+    <path d="M3 15h18M9 11.5l1.5 1M11.5 10l1.5 1" />
+  </svg>
+);
+
+export const IconePlay = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M8 5.5v13l10.5-6.5L8 5.5Z" fill="currentColor" />
+  </svg>
+);
+
+export const IconePausa = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="7" y="5" width="3.5" height="14" rx="1" fill="currentColor" />
+    <rect x="13.5" y="5" width="3.5" height="14" rx="1" fill="currentColor" />
+  </svg>
+);
+
+export const IconeParar = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" />
+  </svg>
+);
+
+export const IconeLocal = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+    <circle cx="12" cy="10" r="2.4" />
+  </svg>
+);
+
+export const IconeHalter = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M7 8v8M4.5 9.5v5M17 8v8M19.5 9.5v5M7 12h10" />
+  </svg>
+);
+
+export const IconeBike = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="6" cy="16" r="3.5" />
+    <circle cx="18" cy="16" r="3.5" />
+    <path d="M6 16l4-7h5l3 7M10 9 8.5 6.5H6.5M14 6.5h2" />
+  </svg>
+);
+
+export const IconeOndas = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M3 10c1.5-1.3 3-1.3 4.5 0s3 1.3 4.5 0 3-1.3 4.5 0 3 1.3 4.5 0" />
+    <path d="M3 15c1.5-1.3 3-1.3 4.5 0s3 1.3 4.5 0 3-1.3 4.5 0 3 1.3 4.5 0" />
+  </svg>
+);
+
+export const IconeYoga = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 8v5M5 11l7 2 7-2M8 20l4-7 4 7" />
+  </svg>
+);
+
+export const IconeRaio = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z" />
+  </svg>
+);
+
+export const IconeMusica = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M9 18V5l11-2v13" />
+    <circle cx="6.5" cy="18" r="2.5" />
+    <circle cx="17.5" cy="16" r="2.5" />
+  </svg>
+);
+
+export const IconeCronometro = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="13.5" r="7.5" />
+    <path d="M12 9.5v4l2.5 2M10 2.5h4M18.5 6.5l1.5-1.5" />
+  </svg>
+);

@@ -1,8 +1,8 @@
 {
-  "name": "Projeto Saúde",
-  "short_name": "Saúde",
+  "name": "Orvalho",
+  "short_name": "Orvalho",
   "description": "Hidratação, alimentação e hábitos saudáveis em um só lugar.",
-  "start_url": "/",
+  "start_url": "/inicio",
   "display": "standalone",
   "background_color": "#f2f6f2",
   "theme_color": "#1b4b3a",
@@ -14,6 +14,44 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Beber 1 copo (250 ml)",
+      "short_name": "+1 copo",
+      "url": "/registrar?ml=250",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Beber 1 garrafa (500 ml)",
+      "short_name": "+500 ml",
+      "url": "/registrar?ml=500",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Ver minha hidratação",
+      "short_name": "Água",
+      "url": "/agua",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }

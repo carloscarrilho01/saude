@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import VitrineModelos from "@/components/VitrineModelos";
+import MuralFeed from "@/components/mural/MuralFeed";
 import { IconeMais } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
@@ -17,9 +20,23 @@ import { aderenciaDoDia } from "@/lib/aderencia";
 import { nomeObjetivo } from "@/lib/refeicoes";
 import type { Regime, StatusRegime } from "@/lib/tipos";
 
+type Aba = "meus" | "explorar" | "comunidade";
+
 export default function PaginaPlanos() {
+  return (
+    <Suspense fallback={<div className="p-6 text-tinta-2">Carregando…</div>}>
+      <ConteudoPlanos />
+    </Suspense>
+  );
+}
+
+function ConteudoPlanos() {
   const pronto = useStorePronto();
-  const [aba, setAba] = useState<"meus" | "explorar">("meus");
+  const router = useRouter();
+  // aba na URL: voltar do detalhe de um modelo retorna para "Explorar"
+  const param = useSearchParams().get("aba");
+  const aba: Aba = param === "explorar" || param === "comunidade" ? param : "meus";
+  const setAba = (a: Aba) => router.replace(a === "meus" ? "/planos" : `/planos?aba=${a}`, { scroll: false });
 
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
@@ -30,48 +47,56 @@ export default function PaginaPlanos() {
       <TopoFolha />
       <h1 className="relative mb-4 text-center text-xl font-extrabold text-tinta">Planos (Regimes)</h1>
 
-      <div className="mx-auto mb-5 flex max-w-xs rounded-full bg-black/5 p-1">
-        {(["meus", "explorar"] as const).map((a) => (
+      <div className="mx-auto mb-5 flex max-w-sm rounded-full bg-black/5 p-1">
+        {(["meus", "explorar", "comunidade"] as const).map((a) => (
           <button
             key={a}
+            aria-pressed={aba === a}
             onClick={() => setAba(a)}
             className={`flex-1 rounded-full py-2 text-sm font-semibold transition ${
               aba === a ? "bg-brand text-white" : "text-tinta-2"
             }`}
           >
-            {a === "meus" ? "Meus planos" : "Explorar"}
+            {a === "meus" ? "Meus planos" : a === "explorar" ? "Modelos" : "Comunidade"}
           </button>
         ))}
       </div>
 
-      {aba === "explorar" ? (
-        <div className="rounded-[var(--radius-card)] bg-card p-8 text-center shadow-[var(--shadow-card)]">
-          <p className="text-sm text-tinta-2">
-            Modelos prontos de regime chegam na v2. Por enquanto, crie o seu do zero.
-          </p>
-        </div>
+      {aba === "comunidade" ? (
+        <MuralFeed />
+      ) : aba === "explorar" ? (
+        <VitrineModelos />
       ) : regimes.length === 0 ? (
         <div className="rounded-[var(--radius-card)] bg-card p-8 text-center shadow-[var(--shadow-card)]">
           <p className="text-sm text-tinta-2">
-            Você ainda não tem planos. Crie um regime para organizar suas refeições e acompanhar a aderência.
+            Você ainda não tem planos. Crie um do zero ou comece por um modelo pronto.
           </p>
+          <button
+            type="button"
+            onClick={() => setAba("explorar")}
+            className="mt-4 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            Ver modelos prontos
+          </button>
         </div>
       ) : (
         <ul className="space-y-3">
-          {regimes.map((r) => (
-            <li key={r.id}>
+          {regimes.map((r, i) => (
+            <li key={r.id} className="surgir" style={{ "--i": i } as React.CSSProperties}>
               <CartaoRegime regime={r} fuso={getPerfil()?.fuso} />
             </li>
           ))}
         </ul>
       )}
 
+      {aba !== "comunidade" && (
       <Link
         href="/planos/novo"
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand/40 py-4 text-sm font-semibold text-brand"
       >
-        <IconeMais width={18} height={18} /> Criar novo plano
+        <IconeMais width={18} height={18} /> {aba === "explorar" ? "Prefiro criar do zero" : "Criar novo plano"}
       </Link>
+      )}
     </div>
   );
 }
@@ -84,7 +109,7 @@ function CartaoRegime({ regime, fuso }: { regime: Regime; fuso?: string }) {
   return (
     <Link
       href={`/planos/${regime.id}`}
-      className="block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]"
+      className="toque block rounded-[var(--radius-card)] bg-card p-4 shadow-[var(--shadow-card)]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">

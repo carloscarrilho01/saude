@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import AnelProgresso from "@/components/AnelProgresso";
-import { IconeGota, IconeLixeira, IconeMais } from "@/components/icons";
+import ModalRegistrarAgua from "@/components/ModalRegistrarAgua";
+import GerenciarRecipientes, { IconeRecipiente } from "@/components/GerenciarRecipientes";
+import SeletorClimaDia from "@/components/SeletorClimaDia";
+import { IconeGota, IconeLixeira, IconeMais, IconeLapis } from "@/components/icons";
 import { TopoFolha } from "@/components/decor";
 import { useStorePronto } from "@/lib/hooks";
 import {
-  getMeta,
+  getRecipientes,
+  metaDoDia,
   getPerfil,
   totalAguaDia,
   getRegistrosAgua,
@@ -15,9 +20,9 @@ import {
   consumoUltimosDias,
 } from "@/lib/storage";
 import { formatarLitros, percentualMeta } from "@/lib/hidratacao";
+import { bateuMeta } from "@/lib/habitos";
 
 type Periodo = "hoje" | "semana" | "mes";
-const ATALHOS = [200, 300, 500];
 
 export default function PaginaAgua() {
   const pronto = useStorePronto();
@@ -26,12 +31,15 @@ export default function PaginaAgua() {
   if (!pronto) return <div className="p-6 text-tinta-2">Carregando…</div>;
 
   const perfil = getPerfil();
-  const metaMl = getMeta()?.metaMl ?? 2000;
+  const metaMl = metaDoDia();
 
   return (
     <div className="relative px-5 pb-6 pt-5" style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}>
       <TopoFolha />
       <h1 className="relative mb-4 text-center text-xl font-extrabold text-tinta">Hidratação</h1>
+      <Suspense fallback={null}>
+        <AvisoRegistrado />
+      </Suspense>
 
       {/* chips de período */}
       <div className="mx-auto mb-6 flex max-w-xs rounded-full bg-black/5 p-1">
@@ -58,6 +66,16 @@ export default function PaginaAgua() {
 }
 
 function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
+  const [modal, setModal] = useState(false);
+  const [gerenciando, setGerenciando] = useState(false);
+  // feedback "+250 ml" que sobe do botão tocado (a key reinicia a animação)
+  const [pulso, setPulso] = useState<{ id: string; n: number } | null>(null);
+  const registrar = (id: string, ml: number) => {
+    adicionarRegistroAgua(ml, "botao_rapido");
+    setPulso((p) => ({ id, n: (p?.n ?? 0) + 1 }));
+    if ("vibrate" in navigator) navigator.vibrate?.(12);
+  };
+  const recipientes = getRecipientes();
   const consumido = totalAguaDia();
   const pct = percentualMeta(consumido, metaMl);
   const registros = getRegistrosAgua();
@@ -80,26 +98,44 @@ function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
         </p>
       </div>
 
-      <p className="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-tinta-2">
-        Registrar consumo
-      </p>
+      <SeletorClimaDia />
+
+      <div className="mt-6 mb-2 flex items-baseline justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wide text-tinta-2">Registrar consumo</p>
+        <button
+          type="button"
+          onClick={() => setGerenciando(true)}
+          className="flex items-center gap-1 text-xs font-semibold text-brand"
+        >
+          <IconeLapis width={14} height={14} /> Meus recipientes
+        </button>
+      </div>
       <div className="grid grid-cols-4 gap-2">
-        {ATALHOS.map((ml) => (
+        {recipientes.map((r) => (
           <button
-            key={ml}
-            onClick={() => adicionarRegistroAgua(ml, "botao_rapido")}
-            className="flex flex-col items-center gap-1 rounded-2xl bg-card py-3 shadow-[var(--shadow-card)] active:scale-95"
+            key={r.id}
+            type="button"
+            onClick={() => registrar(r.id, r.ml)}
+            aria-label={`Registrar ${r.nome}, ${r.ml} ml`}
+            className="toque relative flex flex-col items-center gap-1 rounded-2xl bg-card px-1 py-3 shadow-[var(--shadow-card)]"
           >
-            <IconeGota width={22} height={22} className="text-brand" />
-            <span className="text-xs font-semibold text-tinta">{ml} ml</span>
+            {pulso?.id === r.id && (
+              <span key={pulso.n} aria-hidden className="flutua-sobe pointer-events-none absolute left-1/2 top-0 z-10 whitespace-nowrap rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-white shadow-[var(--shadow-card)]">
+                +{r.ml} ml
+              </span>
+            )}
+            <IconeRecipiente tipo={r.tipo} width={22} height={22} className="text-brand" />
+            <span className="w-full truncate text-center text-[11px] font-medium text-tinta-2">{r.nome}</span>
+            <span className="text-xs font-semibold text-tinta">{r.ml} ml</span>
           </button>
         ))}
         <button
-          onClick={() => adicionarRegistroAgua(100, "manual")}
-          className="flex flex-col items-center gap-1 rounded-2xl bg-card py-3 shadow-[var(--shadow-card)] active:scale-95"
+          type="button"
+          onClick={() => setModal(true)}
+          className="toque flex flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-brand/25 py-3"
         >
           <IconeMais width={22} height={22} className="text-brand" />
-          <span className="text-xs font-semibold text-tinta">100 ml</span>
+          <span className="text-xs font-semibold text-tinta">Outro valor</span>
         </button>
       </div>
 
@@ -112,10 +148,11 @@ function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
         </div>
       ) : (
         <ul className="space-y-2">
-          {registros.map((r) => (
+          {registros.map((r, i) => (
             <li
               key={r.id}
-              className="flex items-center justify-between rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]"
+              style={{ "--i": Math.min(i, 6) } as React.CSSProperties}
+              className="surgir flex items-center justify-between rounded-2xl bg-card px-4 py-3 shadow-[var(--shadow-card)]"
             >
               <span className="flex items-center gap-3">
                 <IconeGota width={20} height={20} className="text-brand" />
@@ -133,15 +170,36 @@ function VistaHoje({ metaMl, fuso }: { metaMl: number; fuso?: string }) {
           ))}
         </ul>
       )}
+
+      <ModalRegistrarAgua aberto={modal} aoFechar={() => setModal(false)} />
+      <GerenciarRecipientes aberto={gerenciando} aoFechar={() => setGerenciando(false)} />
     </>
+  );
+}
+
+/** Confirmação de registro feito pelo atalho do ícone do app. Some sozinha. */
+function AvisoRegistrado() {
+  const router = useRouter();
+  const ml = Number(useSearchParams().get("registrado"));
+  const valido = Number.isFinite(ml) && ml > 0;
+  useEffect(() => {
+    if (!valido) return;
+    const t = setTimeout(() => router.replace("/agua"), 3500);
+    return () => clearTimeout(t);
+  }, [valido, router]);
+  if (!valido) return null;
+  return (
+    <div role="status" className="relative mb-4 rounded-2xl bg-brand px-4 py-3 text-center text-sm font-semibold text-white shadow-[var(--shadow-card)]">
+      +{ml} ml registrados
+    </div>
   );
 }
 
 function VistaGrafico({ dias, metaMl, fuso }: { dias: number; metaMl: number; fuso?: string }) {
   const dados = consumoUltimosDias(dias, fuso);
-  const maxMl = Math.max(metaMl, ...dados.map((d) => d.totalMl), 1);
+  const maxMl = Math.max(metaMl, ...dados.map((d) => Math.max(d.totalMl, d.metaMl)), 1);
   const media = Math.round(dados.reduce((s, d) => s + d.totalMl, 0) / dados.length);
-  const diasBatidos = dados.filter((d) => d.totalMl >= metaMl).length;
+  const diasBatidos = dados.filter(bateuMeta).length;
 
   return (
     <>
@@ -152,7 +210,7 @@ function VistaGrafico({ dias, metaMl, fuso }: { dias: number; metaMl: number; fu
         <div className="mt-5 flex h-40 items-end gap-1.5">
           {dados.map((d) => {
             const altura = Math.round((d.totalMl / maxMl) * 100);
-            const bateu = d.totalMl >= metaMl;
+            const bateu = bateuMeta(d);
             return (
               <div key={d.data} className="flex flex-1 flex-col items-center gap-1">
                 <div className="flex h-32 w-full items-end">

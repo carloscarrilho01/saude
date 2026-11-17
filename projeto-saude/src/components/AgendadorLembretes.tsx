@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import {
   getConfigLembretes,
   getMeta,
+  metaDoDia,
   totalAguaDia,
   getPerfil,
   marcarLembreteDisparado,
@@ -31,7 +32,7 @@ export default function AgendadorLembretes() {
       if (!config.ativo) return;
 
       const perfil = getPerfil();
-      const metaMl = getMeta()?.metaMl ?? Infinity;
+      const metaMl = getMeta() ? metaDoDia() : Infinity;
       const metaAtingida = totalAguaDia() >= metaMl;
       const info = infoAgora(perfil?.fuso);
 
